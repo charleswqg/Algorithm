@@ -1,0 +1,72 @@
+我不会说我最开始是这么写的，但这是事实。根本没想过左右区间的问题，对边界条件的判断属于是出问题再想怎么改。更nt的是把index直接赋值了，其实操作index会更方便。
+class Solution {
+    public int search(int[] nums, int target) {
+    int left =nums[0];
+    int right=nums[nums.length-1];
+    while(left<right-1){
+        int mid=nums[(left+right)/2];
+        if(mid>target){
+            right=(left+right)/2;
+        }
+        else if(mid<target){
+            left=(left+right)/2;
+        }
+        else{
+            return (left+right)/2;
+        }
+    }
+    return -1;
+    }
+}
+
+这是第二次重写的，这次关注了边界问题。（尤其发现了如果mid不等，left和right至少一个需要mid+-1来推进循环，不能直接=mid（死了）。）而且因为可能会存在找到最后，target是最左边元素或最右边元素的情况（简单想就是arr123找target=3）
+同时，right真实存在。这样循环时需要考虑left==right。且mid不等的时候，肯定不是要找的target，干脆左或右=mid+-1。然后发现这个属于左闭右闭区间（由right从length还是length-1决定右闭还是开），说实话我一般就写闭，但开也得看看。
+class Solution {
+    public int search(int[] nums, int target) {
+        int left=0;
+        int right=nums.length-1;
+        while(left<=right){
+            int mid=(right+left)/2;
+            if(nums[mid]<target){
+                left=mid+1;
+            }
+            else if(nums[mid]>target){
+                right=mid-1;
+            }
+            else if(nums[mid]==target){
+                return mid;
+            }
+        }
+        return -1;
+    }
+}
+
+第三次重写，想着如果让right index直接=元素个数（数组长度 nums.length），能咋办。其实就相当于，nums[right]不包含在内（nums[6]不存在，6个元素长度是6，但下标从0到5），是开区间。
+这样index left就不允许==right了（只能left<right）。如果left右移，还是mid+1，因为左可以包含（闭区间）。然而如果right左移，右边始终是开区间，意味着是不能包含当前mid（新right）的，所以right不用在当前mid基础上额外-1。
+（当然我平时应该不会这么写，毕竟更习惯length-1作为右index，让左右下标和值能对应上。
+如果right=length，右没有元素，不可能是target，所以左不能=右，所以右下标左移时不用mid-1，mid本身就行，因为right=mid就已经排除mid=target了。
+class Solution {
+    public int search(int[] nums, int target) {
+        int left=0;
+        int right=nums.length;
+        while(left<right){
+            int mid=(right+left)/2;
+            if(nums[mid]<target){
+                left=mid+1;
+            }
+            else if(nums[mid]>target){
+                right=mid;
+            }
+            else if(nums[mid]==target){
+                return mid;
+            }
+        }
+        return -1;
+    }
+}
+
+总结下来精髓就是，区间开闭问题。闭区间（下标有对应元素）左右可相等（左右边界有可能是target），但如果一边不存在（是开），左右不能等（target不能是边界），因为没意义。
+如果让right=length，right就不能真实存在（右开区间），left不允许等于right，不存在right，target变成right根本没意义。
+也就是说，left<right,那么right这个边界值，是不能成为target的。因为最后相邻3个元素，left=mid+1，试图和right相等时（123，mid在2，left尝试mid+1），直接退出循环了.
+但同样的，right左移时，因为mid本来就不和target相等，而且右开区间，最后left到达不了right（循环条件left<right），mid已经被循环条件排除掉了，所以就算right=mid也没问题。
+最后就是定义下标，别定义元素。然后每次循环中，至少一个left或right要在mid基础上左右动，否则最后剩三个元素会死循环。
