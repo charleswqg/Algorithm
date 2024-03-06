@@ -1,0 +1,36 @@
+link：https://leetcode.cn/problems/remove-element/
+
+1.暴力解法，两层for嵌套，外层遍历元素，发现val后，内层从当前下标开始的右侧，所有元素左移一位，长度-1，i-1（当前位已经是新元素了，不-1就跳过了一个元素）。
+
+class Solution {
+    public int removeElement(int[] nums, int val) {
+        int len=nums.length;
+        for(int i=0;i<len;i++){
+            if(nums[i]==val){
+              for(int j=i+1;j<len;j++){
+                  nums[j-1]=nums[j];
+              }
+            i--;
+            len--;
+            }
+        }
+        return len；
+    }
+}
+
+2，双指针（想不到hh，真的想不到hhhhh，只用一个循环时间复杂度直接变成on！！
+精髓就是快指针外层遍历，寻找新数组需要的元素值；慢指针指向新数组需要元素的位置。
+如果找到需要的元素（不是要删除的元素），就把这个元素赋给慢指针的index对应值。if属于赋值操作，顺便让慢指针（新数组当前需要值的位置）右移，等待快指针传一个需要的值来。
+最后循环结束慢指针的值（数组位置下标），就是新数组的长度（慢指针前面的元素个数）。
+class Solution {
+    public int removeElement(int[] nums, int val) {
+        int slow=0;
+        for(int fast=0;fast<nums.length;fast++){
+            if(nums[fast]!=val){
+                nums[slow]=nums[fast];
+                slow++;
+            }
+        }
+        return slow;
+    }
+}
