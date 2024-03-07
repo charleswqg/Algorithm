@@ -1,0 +1,58 @@
+其实想到了双指针，慢指针指向新数组需要元素的位置，快指针遍历数组找需要的元素。
+但是自己搞砸了！因为没有考虑数组已经排序好了的的特性，还在用循环找。。。。这波时间复杂度n方炸了，还不如先全平方再排序。n+logn
+
+class Solution {
+    public int[] sortedSquares(int[] nums) {
+        int slow=0;
+        while(slow<nums.length){
+            int flag=10000;
+            int index=slow;
+            for(int fast=slow;fast<nums.length;fast++){
+                if(nums[fast]*nums[fast]<=flag){
+                    flag=nums[fast]*nums[fast];
+                    index=fast;
+                }
+            }
+            int temp=nums[slow];
+            nums[slow]=flag;
+            if(index!=slow){
+               nums[index]=temp;
+            }
+            slow++;
+        }
+        return nums;
+
+    }
+}
+
+那我再写一个，新建长度和原来数组相同的空数组。慢指针仍然表示新数组需要元素的当前位置。
+快指针（负责找元素的）其实有两个，且精髓是，由于原来数组从小到大排序，因此平方后最大的数值一定在数组两端！！
+这样就省一层遍历的循环了，直接找两头的数哪个平方后更大，找到大的，慢指针左移，对应一侧的快指针向中心移动（左或右移）
+还要注意新数组要求从小到大，因此找到的最大数，应该在新数组右往左排列（慢指针在新数组最右边）
+
+
+class Solution {
+    public int[] sortedSquares(int[] nums) {
+        int slow=nums.length-1;
+        int left=0;
+        int right=nums.length-1;
+        int [] arr=new int[nums.length];
+        while(slow>=0){
+            if(nums[left]*nums[left]>=nums[right]*nums[right]){
+             arr[slow]=nums[left]*nums[left];
+                slow--;
+                left++;
+            }
+
+        
+            else if(nums[left]*nums[left]<nums[right]*nums[right]){
+              arr[slow]=nums[right]*nums[right];
+                right--;
+                slow--;
+            }
+        }
+        return arr;
+    }
+}
+
+
