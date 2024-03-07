@@ -1,0 +1,46 @@
+link: https://leetcode.cn/problems/spiral-matrix-ii/
+
+说实话，这道题完全没有任何思路，自己没想到啥算法。结果就是不需要算法，模拟过程题。
+精髓是搞清圈数是哪来的，其实是<n/2。（n=4时，转两圈）n为奇数时，只需要把最中间元素赋值n^2就行。
+再就是注意边界条件，代码使用左闭右开区间，把每次大循环（转圈）中的转角留给下一个边。
+然后每圈记录启始位置（横纵坐标相同（start，start）），和当前圈数。
+模拟过程采用for循环依次模拟每圈中的四条边，其中当前下标有的可以利用跳出循环后的结果（转角时，i和j总有一个接下来不变，另一个接下来变）
+
+
+class Solution {
+    public int[][] generateMatrix(int n) {
+        int [][] matrix=new int[n][n];
+        int start=0;  //每圈开始位置坐标
+        int loop=0;   //当前是第几圈，其实可以和start留一个，平替，但留俩方便理解。
+        int i=0;
+        int j=0;
+        int count=1; //这是从1开始到n^2，每次+1填入表格的数据。
+        while(loop<n/2){
+            for(j=start;j<n-loop-1;j++){
+                matrix[i][j]=count;
+                count++;
+            }   //这里假设n=3，第一次转圈，j++后=2，由于接下来从上到下走，正好保持j=2，下面就暂时不用重新给j赋值了！ 同时<n-loop-1,表示留右上转角给下一个for，左闭右开。
+
+            for(i=start;i<n-loop-1;i++){
+                matrix[i][j]=count;
+                count++;
+            }   //这里同理 i变成2，接下来for模拟从右往左走，这时i正好保持2，也不用下个for给i赋值！
+
+            for(;j>loop;j--){
+                matrix[i][j]=count;
+                count++;
+            }   //这里注意j还是2呢，从右往左走，同样把左下转角给下一个for，所以j>0,最后j=0出这个for。
+
+            for(;i>loop;i--){
+                matrix[i][j]=count;
+                count++;
+            }   //这里是最后的从下向上走，此时j已经为0了，i由于第二个for，还是2。但要走完这一圈，最后转角到（0，0）还想留，（这次转圈的start节点）正好最开始已经走过了，结束一圈。
+            loop++;
+            start++;    //结束后记得圈数loop++，下一次的开始节点变成（1，1）
+        }
+        if(n%2==1){
+            matrix[n/2][n/2]=n*n;
+        }
+        return matrix;
+    }
+}
