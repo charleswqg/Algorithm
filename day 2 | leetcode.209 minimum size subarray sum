@@ -22,3 +22,33 @@ class Solution {
     }
 }
 
+绝活来了！滑动窗口。精髓是让循环遍历的表示子数组尾，而不是头。右边一次加一个元素，左边需要（超出target和）的话，一次减一个。
+类似变种双指针，右指针外层遍历，表示的是子数组的尾下标。左指针则属于慢指针，表示头。
+每次右指针右移，sum表示当前从头到右的子数组和。
+如果发现大于等于target了，左指针（数组头）逐渐右移，更新最短长度和当前子数组和（如果还是大等，就每次都减去当前头元素，尝试让数组变短）。
+
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int j=0;
+        int sum=0;
+        int len=nums.length+1;
+        for(int i=0;i<nums.length;i++){
+            sum+=nums[i];
+            while(sum>=target){
+                if(i-j+1<len){
+                  len=i-j+1;
+                }
+                sum-=nums[j];
+                j++;
+            }
+        }
+        if(len==nums.length+1){
+            return 0;
+        }
+        else{
+            return len;
+        }
+    }
+}
+
+
