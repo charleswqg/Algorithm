@@ -1,0 +1,24 @@
+link: https://leetcode.cn/problems/minimum-size-subarray-sum/
+
+我自己第一遍写暴力解法，两层for，更新长度值（第一次还忘了外层循环重置元素和，尴尬。
+
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int len=100000;
+        for(int i=0;i<nums.length;i++){
+            int sum=0;
+            for(int j=i;j<nums.length;j++){
+                sum+=nums[j];
+                if(sum>=target&&(j-i+1)<len){
+                    len=j-i+1;
+                }
+            }
+        }
+        if(len==100000){
+            return 0;
+        }else{
+           return len; 
+        }
+    }
+}
+
