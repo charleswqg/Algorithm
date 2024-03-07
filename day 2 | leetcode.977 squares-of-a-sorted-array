@@ -45,8 +45,6 @@ class Solution {
                 slow--;
                 left++;
             }
-
-        
             else if(nums[left]*nums[left]<nums[right]*nums[right]){
               arr[slow]=nums[right]*nums[right];
                 right--;
