@@ -1,6 +1,8 @@
 link: https://leetcode.cn/problems/reverse-linked-list/description/
-反转链表，俩指针。不知为何prev=head，right=head.next不行。
+反转链表，俩指针。不知为何prev=head，right=head.next不行。(知道了，单链表不能出现anextb，bnexta。如果head和head.next，在right.next=prev时，此时prev的next还是right呢，出现环le！！）
+所以要么初始是null（虚拟头）和head，要么是head和head.next（这时要在循环前把head.next=null避免第一次循环出现环）
 其余没啥，用个temp存right右侧链接的节点，然后右指向左，左右都往右动。
+总结，还得是虚拟头好用，省事避免问题。
 
 /**
  * Definition for singly-linked list.
@@ -24,6 +26,40 @@ class Solution {
         while(right!=null){
             temp=right.next;
             right.next=prev;
+            prev=right;
+            right=temp;
+        }
+        return prev;
+    }
+}
+}
+
+
+//head和head.next
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        else{
+        ListNode prev=head;
+        ListNode right=head.next;
+        ListNode temp;
+        head.next=null;    //赋值后要把head.next变成null，此时prev和right之间是空着的，没有指向。
+        while(right!=null){
+            temp=right.next;
+            right.next=prev;        //这一步之前如果head.next（也就是prev.next,因为引用类型直接弄地址）不是null，直接成环失败！
             prev=right;
             right=temp;
         }
