@@ -1,0 +1,33 @@
+link: https://leetcode.cn/problems/reverse-linked-list/description/
+反转链表，俩指针。不知为何prev=head，right=head.next不行。
+其余没啥，用个temp存right右侧链接的节点，然后右指向左，左右都往右动。
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        else{
+        ListNode prev=null;
+        ListNode right=head;
+        ListNode temp;
+        while(right!=null){
+            temp=right.next;
+            right.next=prev;
+            prev=right;
+            right=temp;
+        }
+        return prev;
+    }
+}
+}
