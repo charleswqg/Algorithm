@@ -1,0 +1,101 @@
+link: https://leetcode.cn/problems/remove-linked-list-elements/
+
+进入链表，注意加虚拟头节点。
+链表当前元素要删除，需要用它的前一个元素.next=它.next.next删。注意循环条件和删除方式。
+如果不用删除，只需要pre变成cur，然后无论如何cur都后移。
+如果不用虚拟头，记得特殊处理头，头如果要删，直接head=head.next
+如果不用pre，记得两层while（因为如果只用外层while里层if，可能cur.next需要删，但它的后一个也需要删，删少了）
+
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+
+ /**
+ * 添加虚节点方式
+ * 时间复杂度 O(n)
+ * 空间复杂度 O(1)
+ * @param head
+ * @param val
+ * @return
+ */
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+     ListNode tempHead=new ListNode(-1,head);
+        ListNode pre=tempHead;
+        ListNode cur=head;
+
+        while(cur!=null){
+            if(cur.val==val){
+                pre.next=cur.next;
+            }else{
+                pre=cur;
+            }
+            cur=cur.next;
+        }
+        return tempHead.next;
+    }
+    
+}
+
+
+
+
+/**
+ * 不添加虚拟节点and pre Node方式
+ * 时间复杂度 O(n)
+ * 空间复杂度 O(1)
+ * @param head
+ * @param val
+ * @return
+ */
+public ListNode removeElements(ListNode head, int val) {
+    while(head!=null && head.val==val){
+        head = head.next;
+    }
+    ListNode curr = head;
+    while(curr!=null){
+        while(curr.next!=null && curr.next.val == val){
+            curr.next = curr.next.next;
+        }
+        curr = curr.next;
+    }
+    return head;
+}
+
+/**
+ * 不添加虚拟节点方式
+ * 时间复杂度 O(n)
+ * 空间复杂度 O(1)
+ * @param head
+ * @param val
+ * @return
+ */
+public ListNode removeElements(ListNode head, int val) {
+    while (head != null && head.val == val)     //精髓while不是if，保证头节点最后一定不=val！！
+        head = head.next;
+    }
+    // 已经为null，提前退出
+    if (head == null) {
+        return head;
+    }
+    // 已确定当前head.val != val
+    ListNode pre = head;
+    ListNode cur = head.next;
+    while (cur != null) {
+        if (cur.val == val) {
+            pre.next = cur.next;
+        } else {
+            pre = cur;
+        }
+        cur = cur.next;
+    }
+    return head;
+}
