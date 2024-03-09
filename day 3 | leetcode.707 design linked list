@@ -1,0 +1,109 @@
+link: https://leetcode.cn/problems/design-linked-list/
+这道题我最开始没看懂怎么设计结构，因为他没给node，记得自己定义。给的mylinkedlist类需要加点属性方便操作。
+head其实是虚拟头节点（是不是取决于你怎么用它），size是链表长度。index很巧妙的被用于for遍历找到index位置，每次循环都执行cur=cur.next；
+同样注意边界条件，注意链表为空，节点为空情况判断提前return。
+
+class node {
+    int val;
+    node next;
+
+    public node() {
+    }
+
+    public node(int val) {
+        this.val = val;
+    }
+}
+
+class MyLinkedList {
+    int size;
+    node head;
+
+    public MyLinkedList() {
+        this.size = 0;
+        this.head = new node(0);
+
+    }
+
+    public int get(int index) {
+        if (index >= this.size) {
+            return -1;
+        } else {
+            node cur = this.head;
+            for (int i = 0; i < index; i++) {
+                cur = cur.next;
+            }
+            return cur.next.val;
+        }
+    }
+
+    public void addAtHead(int val) {
+        node newNode = new node(val);
+        this.size++;
+        if (this.head.next == null) {
+            this.head.next = newNode;
+        } else {
+            newNode.next = this.head.next;
+            this.head.next = newNode;
+        }
+    }
+
+    public void addAtTail(int val) {
+        node newNode = new node(val);
+        node cur = this.head;
+        this.size++;
+        while (cur.next != null) {
+            cur = cur.next;
+        }
+        cur.next = newNode;
+    }
+
+    public void addAtIndex(int index, int val) {
+        node newNode = new node(val);
+        node cur = this.head;
+        if (index > this.size) {
+            return;
+        }
+
+        else {
+            size++;
+            for (int i = 0; i < index; i++) {
+                cur = cur.next;
+            }
+            if (cur.next == null) {
+                cur.next = newNode;
+            } else {
+                newNode.next = cur.next;
+                cur.next = newNode;
+            }
+        }
+    }
+
+     public void deleteAtIndex(int index) {
+        if(index>=this.size){
+            return;
+        }
+        else{
+            size--;
+            node temp=this.head;
+            for(int i=0;i<index;i++){
+                temp=temp.next;
+            }
+            temp.next=temp.next.next;
+        }
+
+    }
+
+}
+
+   
+
+/**
+ * Your MyLinkedList object will be instantiated and called as such:
+ * MyLinkedList obj = new MyLinkedList();
+ * int param_1 = obj.get(index);
+ * obj.addAtHead(val);
+ * obj.addAtTail(val);
+ * obj.addAtIndex(index,val);
+ * obj.deleteAtIndex(index);
+ */
