@@ -1,0 +1,39 @@
+link: https://leetcode.cn/problems/swap-nodes-in-pairs/
+
+问题的关键是怎么交换。判断条件是cur.next和他的next都不等于null（有一对才能换），然后使用dummy头方便操作头节点。cur左右temp，左.next=temp,右.next=左，cur.next=右,cur右移两个。
+
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode swapPairs(ListNode head) {
+        if(head==null || head.next==null){
+            return head;
+        }
+        else{
+            ListNode dummy=new ListNode(-1,head);
+            ListNode cur=dummy;
+            ListNode left;
+            ListNode right;
+            while(cur.next!=null&&cur.next.next!=null){
+                ListNode temp=cur.next.next.next;
+                left=cur.next;
+                right=cur.next.next;
+                left.next=temp;
+                right.next=left;
+                cur.next=right;
+                cur=cur.next.next;
+            }
+            return dummy.next;
+        }
+
+    }
+}
