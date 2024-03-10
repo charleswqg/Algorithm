@@ -1,0 +1,65 @@
+link: https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/description/
+
+两个链表，可能第5个位置开始相交（第四个元素后面的元素是相同的）这里相同是指地址相同（对象相同 curA==curB），不是值相同（curA.val==curB.val）。相交指的是后面全相同不能分开了！！
+有可能两个链表都经过节点3再分开吗不可能，因为节点3的next只有一个，依次类推，只要找到一个节点（在两个链表里），后面全相同。
+思路精髓是，一长一短两个链表，如果想要相交，那开始相交的元素位置，一定在短的链表中。所以可以让长链表的指针和短链表的头对齐，然后共同向后走。next==就找到了。
+1234567  25678两个链表，想要相交，交点一定在25678中，不可能在1234567的第三个元素（3）之前。所以先让长的链表指针移动到短的链表的起始位置对齐。（移到3，这时都是5个元素，然后同时开始往右比相同）
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode curA=headA;
+        ListNode curB=headB;
+        int sizeA=0;
+        int sizeB=0;
+        int gap;   //先算长度，算长度差。
+        while(curA!=null){
+            curA=curA.next;
+            sizeA++;
+        }
+        while(curB!=null){
+            curB=curB.next;
+            sizeB++;
+        }
+        curA=headA;
+        curB=headB;
+        if(sizeA>=sizeB){ 
+            gap=sizeA-sizeB;    
+            for(int i=0;i<gap;i++){     //根据长度差移动长链表的指针，让他和短的对齐（指针后面元素个数相同）
+                curA=curA.next;
+            }
+            while(curA!=null){         //curA=curB才行，表示完全相同（地址），不能仅仅值相同。
+                if(curA!=curB){
+                  curA=curA.next;
+                  curB=curB.next;
+                }else{
+                    return curA;
+                }
+            }
+            return null;
+        }else{
+            gap=sizeB-sizeA;
+            for(int i=0;i<gap;i++){
+                curB=curB.next;
+            }
+            while(curA!=null){
+                if(curA!=curB){
+                  curA=curA.next;
+                  curB=curB.next;
+                }else{
+                    return curA;
+                }
+            }
+            return null;
+        }
+    }
+}
