@@ -1,0 +1,69 @@
+link: https://leetcode.cn/problems/remove-nth-node-from-end-of-list/
+删除链表倒数第n个元素。第几个（下标），一般使用for循环利用遍历次数。
+首先我自己写的，先遍历链表求出元素个数，然后用for循环通过循环次数找到第i个元素，然后让next指向next.next就行。
+
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy=new ListNode(-1,head);
+        ListNode cur=dummy;
+        int size=0;
+        while(cur.next!=null){
+            size++;
+            cur=cur.next;
+        }
+        if(n>=size){
+            return null;
+        }
+        
+        cur=dummy;
+        for(int j=0;j<size-n;j++){
+            cur=cur.next;
+        }
+        cur.next=cur.next.next;
+        return dummy.next;
+    }
+}
+
+
+然后我没想到双指针：同样的思想，快指针定位置，慢指针定值。
+要找倒数第n个元素，先让快走n+1步，然后快慢同时往右，他俩之间的距离就是n。所以当快=null时，指向尾部，此时慢指针正好在倒数第n个之前一个，man.next=man.next.next.
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy=new ListNode(-1,head);
+        ListNode left=dummy;
+        ListNode right=dummy;
+        for(int i=0;i<=n;i++){
+            right=right.next;
+        }
+        while(right!=null){
+            right=right.next;
+            left=left.next;
+        }
+        left.next=left.next.next;
+        return dummy.next;
+    }
+       
+}
+
