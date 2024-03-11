@@ -1,0 +1,53 @@
+link: https://leetcode.cn/problems/valid-anagram/
+
+今天进入hash，不太熟悉，或者说忘了很多。
+先来个暴力算法，两层for一个一个找，外层元素进内层找，找到了visited，最后全visited就1否则0.
+
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        if(s.length()!=t.length()){
+            return false;
+        }
+        int [] isVisted=new int [s.length()];
+        for(int i=0;i<s.length();i++){
+            for(int j=0;j<t.length();j++){
+                if(s.charAt(i)==t.charAt(j) && isVisted[j]==0){
+                    isVisted[j]=1;
+                }
+            }
+        }
+        int flag=0;
+        for(int k=0;k<isVisted.length;k++){
+            if(isVisted[k]==0){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+然后想到了hash相关，因为问题是查看元素有没有出现过，出现几次。
+hash可以用数组（下标key，存储的值value，也属于key唯一value不唯一），set（每个元素就是key，没value，不许有重复元素）和map（key，value键值对，hashmap中，key唯一value不唯一）实现。
+这个就用数组了。record数组有26个元素，想要对应26个字母a-z。那如何把数组下标和字母对应呢。字母是char，可以用减法算当前字母和a的差值，a-a=0;b-a=1...
+所以key就是数组下标（哪个字母），value就是数组的值（这个字母的出现次数）。
+存储进去s的字母和出现次数后，再用t遍历（只不过value--）。
+如果最后record数组有值不为0，说明s字符串有这个字母，t字符串出现这个字母的次数少了，所以不匹配！
+如果record全是0，说明s每次出现的字母个数，都被t减回去了，完全匹配！
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        int [] record=new int[26];
+        for(int i=0;i<s.length();i++){
+            record[s.charAt(i)-'a']++;
+        }
+        for(int j=0;j<t.length();j++){
+            record[t.charAt(j)-'a']--;
+        }
+
+        for(int count: record){
+            if(count!=0){
+                return false;
+            }
+        }
+        return true;
+    }
+}
