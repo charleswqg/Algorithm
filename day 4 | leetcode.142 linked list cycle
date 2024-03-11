@@ -1,0 +1,42 @@
+link: https://leetcode.cn/problems/linked-list-cycle-ii/
+
+这道题真的真的不会做，建议看链接 https://programmercarl.com/0142.%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8II.html#%E7%AE%97%E6%B3%95%E5%85%AC%E5%BC%80%E8%AF%BE
+首先确定有无环，有环再找环的入口。
+有无环：快慢指针，快指针一次next两回，慢指针next一回。如果最后在变成null之前，快指针=慢指针（追上了），说明有环。
+在此基础上，画图表示长度位置。2（x+y）=x+y+n(y+z),n表示快指针在环里面转n圈了。x表示从头节点到进环节点的节点数（距离），y表示进环节点到快慢指针相遇节点距离，z表示相遇到进环的距离。
+因为慢速度是快的一半，慢走了（x+y），快走了（等式右边），所以2倍节点数。
+化简 x = (n - 1) (y + z) + z，其中n至少1（快指针最少转一圈到相遇）。x=z时，相当于头节点到进环节点的节点数，等于相遇节点到进环节点的节点数（或者n>1表示加上n-1圈的节点数）。
+所以精髓：让a节点从头节点出发，b节点从相遇节点出发，速度相同（.next），这俩节点相等时，正好就在进环节点！！！！！
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+ 
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode fast=head;
+        ListNode slow=head;
+        while(fast!=null && fast.next!=null){
+            slow=slow.next;
+            fast=fast.next.next;
+            if(slow==fast){
+                ListNode a=head;
+                ListNode b=fast;
+                while(a!=b){
+                    a=a.next;
+                    b=b.next;
+                }
+                return a;
+            }
+        }   
+        return null;
+    }
+}
