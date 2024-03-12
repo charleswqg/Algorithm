@@ -1,0 +1,30 @@
+link: https://leetcode.cn/problems/intersection-of-two-arrays/
+
+
+这道题没想出来。。。其实俩hashset就解决了。
+第一个hashset存第一个数组的元素，然后遍历第二个数组，如果当前元素在第一个hashset中出现（contains），说明在第一个数组中出现，
+此时把它放进第二个hashset，作为结果。最后把第二个hashset转换为数组输出。
+
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        if(nums1.length==0||nums2.length==0||nums1==null||nums2==null){
+            return null;
+        }
+        HashSet<Integer> setA=new HashSet<>();
+        HashSet<Integer> setB=new HashSet<>();
+        for(int i: nums1){
+            setA.add(i);
+        } 
+        for(int j: nums2){
+            if(setA.contains(j)){
+                setB.add(j);
+            }
+        }  
+        int arr[]=new int[setB.size()];
+        int m=0;
+        for(int n: setB){
+            arr[m++]=n;
+        }    
+        return arr;
+    }
+}
