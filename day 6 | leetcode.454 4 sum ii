@@ -1,0 +1,29 @@
+link: https://leetcode.cn/problems/4sum-ii/
+
+这道题我自己也不会写！太笨了hhh
+问题的关键是，不需要你去输出下标，只需要输出四个数字和为0出现的次数。所以不用记录下标。
+同时类比两数之和，他满足寻找一个元素是否出现过（出现次数）的情况，用hashmap。
+当我们需要查询一个元素是否出现过，或者一个元素是否在集合里的时候，就要第一时间想到哈希法。
+key记录前两个数组的两数和，value是这个和出现的次数。
+再两层循环遍历后两个数组的和，看map的key中是否有0-后两和的结果，有就结果+1，没有就+0（或用if不管）。
+
+class Solution {
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        HashMap<Integer,Integer> map=new HashMap<>();
+        for(int i: nums1){
+            for(int j: nums2){
+                int sum=i+j;
+                map.put(sum,map.getOrDefault(sum,0)+1);
+            }
+        }
+        int res=0;
+        for(int i: nums3){
+            for(int j:nums4){
+                if(map.containsKey(0-i-j)){       //这个if也可以写成 res+=map.getOrDefault(0-i-j,0);如果map中有key为0-i-j的，输出他的value（出现次数），没有返回0。
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+}
