@@ -1,0 +1,63 @@
+link: https://leetcode.cn/problems/two-sum/
+
+这道题有思路，但做错了。因为要看需要找的元素是否出现过（存在）所以有想到用hashmap。且发现数组的值应该放进key里（下标放value）
+因为后续循环要找hashmap中是否有key并获得（如果把数组元素放进value，数组下标key，不能通过value获得key）
+但这样忽略了一个问题，如果在刚开始把数组所有元素放进hashset，如果数组元素有重复，就覆盖了（hashset的key不能重复）。
+所以精髓是不提前放，边放边找，没有再放！！
+
+先贴个自己写的错误答案【3，3】6，这种只会存一个（3，1），（3，0）被覆盖了。（key都是3，数组中的元素），所以第二次循环找出的index是1和1而不是0和1.
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        HashMap<Integer,Integer> map=new HashMap<>();
+        int index1=-1;
+        int index2=-1;
+        int [] res=new int[2];
+        for(int i=0;i<nums.length;i++){
+            map.put(nums[i],i);
+        }
+        for(int j=0;j<nums.length;j++){
+            if(map.containsKey(target-nums[j])){
+                index1=j;
+                index2=map.get(target-nums[j]);
+            }
+        }
+        if(index1>=0&&index2>=0){
+            res[0]=index1;
+            res[1]=index2;
+        }
+       return res;
+
+    }
+}
+
+正确答案确实是key放数组元素，value放下标。但不提前放，遍历的时候如果发现没有对应结果，再放！
+这种放【3，3】6，由于第二个3进循环时满足map.containsKey(target-nums[i])，可以直接出循环了，不用覆盖。
+如果是【3，3，6，9】12，就算覆盖了，结果也是对的。其实就是把俩相同元素是结果，导致覆盖的问题解决了，因为这种情况满足直接输出跳循环的条件！
+
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        HashMap<Integer,Integer> map=new HashMap<>();
+        int index1=-1;
+        int index2=-1;
+        int [] res=new int[2];
+        for(int i=0;i<nums.length;i++){
+            if(map.containsKey(target-nums[i])){
+                index1=i;
+                index2=map.get(target-nums[i]);
+                break;
+            }
+            else{
+                map.put(nums[i],i);
+            }
+        }
+        if(index1>=0&&index2>=0){
+            res[0]=index1;
+            res[1]=index2;
+        }
+       return res;
+    }
+}
+
+
