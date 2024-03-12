@@ -1,0 +1,27 @@
+link: https://leetcode.cn/problems/happy-number/
+
+这道题没想出来，精髓是那句可能无限循环，这就相当于，可能要看元素是否以前出现过，想到hashset。
+如果没出现过（或者不是1直接输出），进循环，计算结果加入hashset。如果hashset contains这个元素，说明之前出现过，无限循环了，那也直接退出。
+输出的结果是n是否等于1.如果等于，快乐数！如果不等，说明是因为无限循环（hashset已经有这个元素了），false。
+计算各位平方和，可以写个小函数。%10对10取余获得最后一位数，平方求和加到result，再/10去掉最后一位。321 1，32
+
+class Solution {
+    public boolean isHappy(int n) {
+        HashSet<Integer> set=new HashSet<>();
+        while(n!=1||!set.contains(n)){
+            set.put(n);
+            n=calculateNext(n);
+        }
+        return n==1;
+    }
+
+    public int calculateNext(int n){
+        int result=0;
+        while(n>0){
+            int cur=n%10;
+            result+=cur*cur;
+            n=n/10;
+        }
+        return result;
+    }
+}
