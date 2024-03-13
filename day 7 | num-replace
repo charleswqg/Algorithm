@@ -1,0 +1,23 @@
+link: https://kamacoder.com/problempage.php?pid=1064
+
+这道题让我把字符串中的数字都换成number，字母不变，对java来说StringBuilder解决战斗可惜我忘了。
+注意一下这几个函数的用法。
+
+
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        String s = in.nextLine();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            if (Character.isDigit(s.charAt(i))) {
+                sb.append("number");
+            }else {
+                sb.append(s.charAt(i));
+            }
+        }
+        System.out.println(sb);
+    }
+}
