@@ -52,6 +52,21 @@ class Solution {
 关键是去重，因为数组先排序了，所以会简单很多。首先如果i元素和他之前的相同，直接跳过这个i循环。因为i-1比i的选择只多不少，i的所有可能一定会被包括。
 然后是left和right，就比如 -5 -3 1 1 1 2 2 2 4 5，i在-3，left在1right在2时符合和为0。
 此时因为a已经去过重了，就看left和right，加进result，然后左右都移过重复元素。也可以先移动再加进result，只是顺序问题，没影响。
+也有人这么去（每次移动left和right都去，但没必要，都是一个个减或加的，顺序问题），判断条件没变化。
+只要保证输出结果没有重复就行，所以干脆放=0时候去。
+while (right > left) {
+    if (nums[i] + nums[left] + nums[right] > 0) {
+        right--;
+        // 去重 right
+        while (left < right && nums[right] == nums[right + 1]){ right--;}
+    } else if (nums[i] + nums[left] + nums[right] < 0) {
+        left++;
+        // 去重 left
+        while (left < right && nums[left] == nums[left - 1]){ left++;}
+    } else {
+    }
+}
+
 
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
