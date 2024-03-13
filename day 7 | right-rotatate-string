@@ -1,0 +1,36 @@
+link:https://kamacoder.com/problempage.php?pid=1065
+
+abcdef 2变成 efabcd。
+  
+没想出来，思路和上一题类似，整体旋转+局部旋转。
+  fedcba，然后前2和后面分别转。efabcd
+  
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = Integer.parseInt(in.nextLine());
+        String s = in.nextLine();
+
+        int len = s.length();  //获取字符串长度
+        char[] chars = s.toCharArray();
+        reverseString(chars, 0, len - 1);  //反转整个字符串
+        reverseString(chars, 0, n - 1);  //反转前一段字符串，此时的字符串首尾是0,n - 1
+        reverseString(chars, n, len - 1);  //反转后一段字符串，此时的字符串首尾是n,len - 1
+        
+        System.out.println(chars);
+
+    }
+
+    public static void reverseString(char[] ch, int start, int end) {
+        //异或法反转字符串，参照题目 344.反转字符串的解释
+        while (start < end) {
+            char temp=ch[start];
+            ch[start]=ch[end];
+            ch[end]=temp;
+            start++;
+            end--;
+        }
+    }
+}
