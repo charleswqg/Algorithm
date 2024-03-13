@@ -1,0 +1,96 @@
+link: https://leetcode.cn/problems/3sum/
+
+这道题有点太恶心了，我想到了用哈希表，但出现了若干nt问题。ijk互不相等，且三元组的值也不有重复。 12337求6。 1，2，3(i=2)和1，2，3（i=3）重复
+如果用hashmap，两点需要注意。
+首先是key存数组值，value不能是int，需要是一个list，存所有的等于这个key的元素下标。下面二重循环找target的时候，首先j要从i后一个开始，其次要一个一个k拿出来看是否和i，j相等，不等才行。
+其次，在找到三元组（通过当前循环的下标i，j,k获得对应的三个值（一个子list））后，要看result这个list里面有没有相同的子list，所以先对这三个值排序，然后如果！contains，才能插入。
+下面就是n方复杂度（遍历k不一定全部走完，所以是常数复杂度）。逆天玩意太难写了。
+
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+   List<List<Integer>> result = new ArrayList<>();
+        int n = nums.length;
+        // 定义哈希表，存储每个值对应的下标列表
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            if (!map.containsKey(nums[i])) {
+                map.put(nums[i], new ArrayList<>());
+            }
+            map.get(nums[i]).add(i);
+        }
+
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int target = -(nums[i] + nums[j]);
+                if (map.containsKey(target)) {
+                    for (int k : map.get(target)) {
+                        // 确保三个索引不相等
+                        if (k != i && k != j) {
+                            // 构建三元组
+                            List<Integer> triplet = new ArrayList<>();
+                            triplet.add(nums[i]);
+                            triplet.add(nums[j]);
+                            triplet.add(target);
+                            // 对三个数值进行排序
+                            Collections.sort(triplet);
+                            // 判断是否已经存在于结果中
+                              if (!result.contains(triplet)) {
+                                // 添加到结果中
+                                result.add(triplet);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+}
+
+接下来是绝活，双指针。循环确定第一个元素的位置，left和right是另外俩元素，在i和数组结尾之间，向中间移动。和大了就right向左，和小了就left向右。
+关键是去重，因为数组先排序了，所以会简单很多。首先如果i元素和他之前的相同，直接跳过这个i循环。因为i-1比i的选择只多不少，i的所有可能一定会被包括。
+然后是left和right，就比如 -5 -3 1 1 1 2 2 2 4 5，i在-3，left在1right在2时符合和为0。
+此时因为a已经去过重了，就看left和right，加进result，然后左右都移过重复元素。也可以先移动再加进result，只是顺序问题，没影响。
+
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result=new ArrayList<>();
+        Arrays.sort(nums);
+        for(int i=0;i<nums.length-2;i++){
+            if (nums[i] > 0) { 
+                return result;
+            }
+            if(i>0&&nums[i-1]==nums[i]){
+                continue;
+            }
+            int left=i+1;
+            int right=nums.length-1;
+            while(left<right){
+                int sum=nums[i]+nums[left]+nums[right];
+                if(sum>0){
+                    right--;
+                }
+                else if(sum<0){
+                    left++;
+                }
+                else{
+                    result.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                    while(nums[right]==nums[right-1]&&left<right){
+                        right--;
+                    }
+                    while(nums[left]==nums[left+1]&&left<right){
+                        left++;
+                    }
+                    // result.add(Arrays.asList(nums[i], nums[left], nums[right]));放这里也行，都一样。
+                    right--;
+                    left++;
+                }
+            }
+        }
+        return result;
+
+    }
+}
+
+
