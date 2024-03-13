@@ -1,0 +1,58 @@
+link: https://leetcode.cn/problems/4sum/
+
+不得不说，这个答案是我没看题解，自己debug调出来的，因为和三个数的和很像，只不过忘了减枝。
+还是双指针，不过外面要多一个循环，且同样是外层重复就continue，内层左右指针向中间动！
+
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> result=new ArrayList<>();
+        Arrays.sort(nums);
+        if(nums[0]>0&&nums[0]>target ){    //减枝防溢出，这种情况不可能有结果，排序后最小的元素（正数）都大于target。
+            return result;
+        }
+        for(int i=0;i<nums.length;i++){
+       // if(nums[i]>0&&nums[i]>target ){   //也可以在这里减
+       //     return result;
+       //}
+        
+            if(i!=0&&nums[i-1]==nums[i]){
+                continue;
+            }
+            for(int j=i+1;j<nums.length;j++){
+                if(nums[j-1]==nums[j]&&j!=i+1){
+                    continue;
+                }
+                int left=j+1;
+                int right=nums.length-1;
+                while(left<right){
+                    int sum=nums[i]+nums[j]+nums[left]+nums[right];
+                    if(sum>target){
+                        right--;
+                    }
+                    else if(sum<target){
+                        left++;
+                    }
+                    else if(sum==target){
+                        result.add(Arrays.asList(nums[i],nums[j],nums[left],nums[right]));
+                        while(nums[right]==nums[right-1]&&left<right){
+                            right--;
+                        }
+                        while(nums[left]==nums[left+1]&&left<right){
+                            left++;
+                        }
+                        right--;
+                        left++;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
+
+
+
+
+
+
+
