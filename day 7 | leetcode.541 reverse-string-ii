@@ -1,0 +1,27 @@
+link: https://leetcode.cn/problems/reverse-string-ii/
+
+说实话没写出来，卡在判断奇数偶数个k了，模拟题还是代码能力差。
+解法很巧妙的一点就是，让i每次加2k，相当于每2k一个判断区间。这样反转的区间开头就是i（0，2k，4k...）
+同时，每个2k区间内，反转的结尾只有两种可能，要么是start+k-1（区间内前k个），要么是到头了（区间不足k个元素），直接反转到尾部。
+每次循环，获得的真实区间长度三种可能:
+1.不足k：直接反转到结尾（length-1）
+2.k到2k：反转到k（start+k-1）  
+3.2k:反转到k（start+k-1）
+
+class Solution {
+    public String reverseStr(String s, int k) {
+        char [] arr=s.toCharArray();
+        for(int i=0;i<arr.length;i+=2*k){
+            int start=i;
+            int end=Math.min(i+k-1,arr.length-1);
+            while(start<end){
+                char temp=arr[start];
+                arr[start]=arr[end];
+                arr[end]=temp;
+                start++;
+                end--;
+            }
+        }
+        return new String(arr);
+    }
+}
