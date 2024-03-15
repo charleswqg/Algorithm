@@ -1,0 +1,141 @@
+link: https://leetcode.cn/problems/implement-queue-using-stacks/description/
+
+复习了一下queue和stack的方法,注意判断是否empty。
+
+这个题是用两个zhan模拟队列。
+
+stack: 
+Stack<Integer> stackA=new Stack<>();
+stackA.push(3);
+int b=stackA.pop();
+boolean flag=stackA.isEmpty();
+int c=stackA.peek();
+
+
+然后我自己写的代码
+
+class MyQueue {
+    Stack<Integer> left;
+    Stack<Integer> right;
+    public MyQueue() {
+        this.left=new Stack();
+        this.right=new Stack();
+    }
+    
+    public void push(int x) {
+        int i;
+       // 右弹出进左，左进右
+       while(!right.empty()){
+        i=right.pop();
+        left.push(i);
+       }
+       right.push(x);
+       while(!left.isEmpty()){
+        i=left.pop();
+        right.push(i);
+       }
+    }
+    
+    public int pop() {
+        if(this.right.isEmpty()){
+            return -1;
+        }
+       int i=this.right.pop();
+       return i;
+    }
+    
+    public int peek() {
+        if(this.right.isEmpty()){
+            return -1;
+        }
+       int i=this.right.peek();
+       return i;
+    }
+    
+    public boolean empty() {
+        if(!right.isEmpty()){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+}
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue obj = new MyQueue();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.peek();
+ * boolean param_4 = obj.empty();
+ */
+
+
+
+ 但其实这样更专业：stack left就当作进入zhan，right就是出，同时写个方法moveElements，表示把左zhan元素pop出来，然后压进右zhan。
+ push就是压左。
+ pop和peek先移动左zhan到右（调move方法），再pop右或者peek。
+
+
+ class MyQueue {
+    Stack<Integer> left;
+    Stack<Integer> right;
+    public MyQueue() {
+        this.left=new Stack<>();
+        this.right=new Stack<>();
+    }
+    
+    public void push(int x) {
+        left.push(x);
+    }
+    
+    public int pop() {
+        moveElements();
+        if(this.right.isEmpty()){
+            return -1;
+        }
+        else{
+            return this.right.pop();
+        }
+    }
+ 
+    
+    public int peek() {
+        moveElements();
+        if(this.right.isEmpty()){
+            return -1;
+        }
+        else{
+            int i=this.right.peek();
+            return i;
+        }
+    }
+    
+    public boolean empty() {
+        if(right.isEmpty()&&this.left.isEmpty()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+        private void moveElements() {
+        // 如果 right 栈为空，则将 left 栈中的元素移动到 right 栈中
+        if (right.isEmpty()) {
+            while (!left.isEmpty()) {
+                right.push(left.pop());
+            }
+        }
+    }
+}
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue obj = new MyQueue();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.peek();
+ * boolean param_4 = obj.empty();
+ */
