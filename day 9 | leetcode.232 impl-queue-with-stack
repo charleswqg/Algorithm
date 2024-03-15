@@ -10,6 +10,7 @@ stackA.push(3);
 int b=stackA.pop();
 boolean flag=stackA.isEmpty();
 int c=stackA.top();
+int size=stackA.size();
 
 
 然后我自己写的代码
