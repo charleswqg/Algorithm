@@ -64,3 +64,43 @@ class MyStack {
  * int param_3 = obj.top();
  * boolean param_4 = obj.empty();
  */
+
+也可以用deque，注意语法。deque的两端都能add和poll，也可以peek。
+
+class MyStack {
+    // Deque 接口继承了 Queue 接口
+    // 所以 Queue 中的 add、poll、peek等效于 Deque 中的 addLast、pollFirst、peekFirst
+    Deque<Integer> que1;
+    /** Initialize your data structure here. */
+    public MyStack() {
+        que1 = new ArrayDeque<>();
+    }
+    
+    /** Push element x onto stack. */
+    public void push(int x) {
+        que1.addLast(x);
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    public int pop() {
+        int size = que1.size();
+        // 将 que1最后一个元素前的所有元素先poll再add到尾 ，留下最后一个值。先poll，输出，再add回尾。
+        while (size > 1) {
+            que1.addLast(que1.pollFirst());
+            size--;
+        }
+        int res = que1.pollFirst();
+        que1.addLast(res);
+        return res;
+    }
+    
+    /** Get the top element. */
+    public int top() {
+        return que1.peekLast();
+    }
+    
+    /** Returns whether the stack is empty. */
+    public boolean empty() {
+        return que1.isEmpty();
+    }
+}
