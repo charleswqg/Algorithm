@@ -7,7 +7,7 @@ queueA.add(a);
 int b;
 b=queueA.poll();
 int result;
-result=queueA.top();
+result=queueA.peek();
 int size=queueA.size();
 queueA.isEmpty();
 
