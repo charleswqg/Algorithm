@@ -1,0 +1,66 @@
+link: https://leetcode.cn/problems/implement-stack-using-queues/
+
+还是先复习函数和写法。
+Queue<Integer> queueA=new LinkedList<>();
+int a=3;
+queueA.add(a);
+int b;
+b=queueA.poll();
+int result;
+result=queueA.top();
+int size=queueA.size();
+queueA.isEmpty();
+
+思路没想到，这里不仅不用两个queue，还可能用deque。
+如果用第二个queue，起到的是备份作用。
+add不变，poll的时候，主队列元素除了最后一个（要被poll那个），剩下前面的都进辅助队列，最后一个元素poll，再把辅助队列元素add进主队列。
+如果只用一个queue，push不变，poll的时候把最后一个元素之前的所有元素poll出来，再add回队列尾（while）。此时最后一个元素就到队列头了，直接poll。
+top同理，poll的时候用result接着，输出完再add回队列尾。
+
+class MyStack {
+    Queue<Integer> queueA;
+
+    public MyStack() {
+        this.queueA=new LinkedList<>();
+    }
+    
+    public void push(int x) {
+        this.queueA.add(x);
+    }
+    
+    public int pop() {
+        int size=queueA.size();
+        while(size>1){
+           this.queueA.add(this.queueA.poll());
+           size--;
+        }
+        return this.queueA.poll();
+    }
+    
+    public int top() {
+        int size=queueA.size();
+        int result;
+        while(size>1){
+         this.queueA.add(this.queueA.poll());
+         size--;
+        }
+        result=queueA.poll();
+        queueA.add(result);
+        return result;
+    } 
+
+    
+    
+    public boolean empty() {
+        return this.queueA.isEmpty();
+    }
+}
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack obj = new MyStack();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.top();
+ * boolean param_4 = obj.empty();
+ */
