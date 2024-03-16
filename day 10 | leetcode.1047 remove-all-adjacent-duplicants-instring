@@ -1,0 +1,40 @@
+link: https://leetcode.cn/problems/remove-all-adjacent-duplicates-in-string/
+
+这道题有思路，代码差一点。
+stack的作用是，在循环遍历到当前元素的时候，可以通过peek和pop操作上一个元素。
+如果相等，pop；如果不等或stack空，push当前。
+最后逆序写入数组， new String（arr）输出。
+
+也可以用双向队列：Deque<Character> deque = new ArrayDeque<>();
+
+deque.addFirst()加到队列头（等于stack的push）
+
+deque.addLast()加到队列尾（等于queue的add）
+
+deque.pollFirst()从队列头取出（等于queue的poll，也等于stack的pop）
+
+deque.pollLast()从队列尾取出（代表栈底或队列尾，方便操作）
+
+
+
+
+class Solution {
+    public String removeDuplicates(String s) {
+        Stack<Character> stack=new Stack<>();
+        for(int i=0;i<s.length();i++){
+            if(stack.isEmpty()||stack.peek()!=s.charAt(i)){
+                stack.push(s.charAt(i));
+            }
+            else if(stack.peek()==s.charAt(i)){
+                stack.pop();
+            }
+        }
+
+        char arr[]=new char[stack.size()]; 
+        for(int i=arr.length-1;i>=0;i--){
+            arr[i]=stack.pop();
+        }
+
+        return new String(arr);
+    }
+}
