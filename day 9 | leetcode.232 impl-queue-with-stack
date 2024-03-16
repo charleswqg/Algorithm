@@ -9,7 +9,7 @@ Stack<Integer> stackA=new Stack<>();
 stackA.push(3);
 int b=stackA.pop();
 boolean flag=stackA.isEmpty();
-int c=stackA.top();
+int c=stackA.peek();
 int size=stackA.size();
 
 
