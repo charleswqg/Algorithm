@@ -1,0 +1,31 @@
+link: https://leetcode.cn/problems/evaluate-reverse-polish-notation/description/
+
+这道题思路对了，代码差一点。
+判断数字不方便，但用.equals（）判断和哪个运算符号相等很方便，所以else给数字。
+
+注意String [] tokens是一个字符串数组，数组中每个元素都是字符串，字符串相等要用.equals（）。（==对基本数据类型比值，对引用类型比地址，string是引用类型，有问题。）
+
+class Solution {
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> stack = new Stack<>();
+        for (String token : tokens) {
+            if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) {
+                int b = stack.pop();
+                int a = stack.pop();   //注意先pop出来的是第二个操作数b，（a-b）
+                if (token.equals("+")) {
+                    stack.push(a + b);
+                } else if (token.equals("-")) {
+                    stack.push(a - b);
+                } else if (token.equals("*")) {
+                    stack.push(a * b);
+                } else if (token.equals("/")) {
+                    stack.push(a / b);
+                }
+            } else {
+                stack.push(Integer.valueOf(token));     //Integer.valueOf(字符串) 可以把字符串转换成包装类 Integer。而Integer.parseInt（）转换成的是int。
+            }
+        }
+        return stack.pop();
+    }
+}
+
