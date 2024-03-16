@@ -1,0 +1,37 @@
+link: https://leetcode.cn/problems/valid-parentheses/description/
+
+这道题想了一半但没写全，用栈。循环遇到左括号直接压。（这里可以用if else压对应的右括号方便比较）
+遇到右括号时，如果stack空了，说明右多，false。反之pop出栈顶元素和当前元素比是否相同（也可用peek比完再pop），不同也是false。
+最后如果stack没空，说明左括号多，也是false。
+
+
+class Solution {
+    public boolean isValid(String s) {
+        Stack<Character> t=new Stack<>();
+        char cur;
+        for(int i=0;i<s.length();i++){    //这里遇左括号，直接压对应右括号方便后续比较。
+            cur=s.charAt(i);
+            if(s.charAt(i)=='('){
+                t.push(')');
+            }
+            else if(s.charAt(i)=='['){
+                t.push(']');
+            }
+            else if(s.charAt(i)=='{'){
+                t.push('}');
+            }
+            else{                        //这里代表遇到的是右括号
+                if(t.isEmpty()){         //循环没结束stack就空了，右多
+                    return false;
+                }
+                else{
+                    if(t.peek()!=cur){   //栈顶元素不是同样的右括号，对不上也是false。
+                      return false;
+                    }
+                    t.pop();            //记得pop出来
+                }
+            }
+        }
+        return t.isEmpty();    //左多了，最后stack没空也是false
+    }
+}
