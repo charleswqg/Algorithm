@@ -7,11 +7,11 @@ stack的作用是，在循环遍历到当前元素的时候，可以通过peek�
 
 也可以用双向队列：Deque<Character> deque = new ArrayDeque<>();
 
-deque.addFirst()加到队列头（等于stack的push）
+deque.addFirst()从右往左不断压（加）到队列头，队列右端等于栈顶。（等于stack的push）
 
-deque.addLast()加到队列尾（等于queue的add）
+deque.addLast()从左段往右加元素，相当于加到队列尾（等于queue的add）
 
-deque.pollFirst()从队列头取出（等于queue的poll，也等于stack的pop）
+deque.pollFirst()从右侧的队列头取出（等于queue的poll，也等于stack的pop）
 
 deque.pollLast()从队列尾取出（代表栈底或队列尾，方便操作）
 
