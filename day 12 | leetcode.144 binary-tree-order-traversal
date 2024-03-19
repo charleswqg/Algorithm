@@ -1,5 +1,9 @@
 link: https://leetcode.cn/problems/binary-tree-preorder-traversal/description/
 
+link: https://leetcode.cn/problems/binary-tree-inorder-traversal/description/
+
+link: https://leetcode.cn/problems/binary-tree-postorder-traversal/description/
+
 写出来了，前序遍历中左右。中序遍历左中右，后序遍历左右中。所谓的前中后指的是，输出当前节点（加到ArrayList时的相对位置）和进入左右递归的相对顺序（中表示输出当前节点）。
 递归的时候注意三点要想清楚，首先是形参和返回值，然后是终止条件，最后是每次要干啥（栈）。
 
