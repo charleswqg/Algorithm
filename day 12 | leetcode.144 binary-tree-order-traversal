@@ -1,0 +1,66 @@
+link: https://leetcode.cn/problems/binary-tree-preorder-traversal/description/
+
+写出来了，前序遍历中左右。中序遍历左中右，后序遍历左右中。所谓的前中后指的是，输出当前节点（加到ArrayList时的相对位置）和进入左右递归的相对顺序（中表示输出当前节点）。
+递归的时候注意三点要想清楚，首先是形参和返回值，然后是终止条件，最后是每次要干啥（栈）。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> list=new ArrayList<>();
+        pre(root,list);
+        return list;
+    }
+
+前序
+    
+    public void pre(TreeNode cur, List<Integer> list){
+        if(cur==null){
+            return;
+        }
+        else{
+            list.add(cur.val);
+            pre(cur.left,list);
+            pre(cur.right,list);
+        }
+    }
+}
+
+中序
+
+    public void in(TreeNode cur, List<Integer> list){
+        if(cur==null){
+            return;
+        }
+        else{
+            in(cur.left,list);
+            list.add(cur.val);
+            in(cur.right,list);
+        }
+    }
+
+    
+后序
+    public void post(TreeNode cur, List<Integer> list){
+        if(cur==null){
+            return;
+        }
+        else{
+            post(cur.left,list);
+            post(cur.right,list);
+            list.add(cur.val);
+        }
+    }
