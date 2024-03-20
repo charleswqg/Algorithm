@@ -1,0 +1,47 @@
+link: https://leetcode.cn/problems/binary-tree-right-side-view/description/
+
+这里让你返回二叉树每一层最右侧的节点，每一层有len个元素（内层循环len次）。
+也就是层序遍历到每一层的当前循环len为1时，才把这次内层循环操作的元素加入结果。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {.    //注意看要返回啥，如果就是一个单层list，就不用内层循环再来一个list了。
+        if(root==null){
+            return new ArrayList<>();
+        }
+        List<Integer> finalResult=new ArrayList<>();
+        Queue<TreeNode> queue=new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()){
+            int len=queue.size();      
+            while(len>0){  
+                TreeNode cur=queue.poll();
+                if(len==1){                               //只有遍历到每一层的最后一个元素，才加入结果输出。
+                   finalResult.add(cur.val);
+                }
+                if(cur.left!=null){
+                    queue.add(cur.left);
+                }
+                if(cur.right!=null){
+                    queue.add(cur.right);
+                }
+                len--;
+            }
+        }
+        return finalResult;
+    }
+}
