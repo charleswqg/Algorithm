@@ -1,0 +1,53 @@
+link: https://leetcode.cn/problems/binary-tree-level-order-traversal-ii/description/
+
+层序遍历，最后反转结果list就行。
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    /**
+     * 解法：队列，迭代。
+     * 层序遍历，再翻转数组即可。
+     */
+   public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        List<List<Integer>> list = new ArrayList<>();
+        Deque<TreeNode> que = new LinkedList<>();
+        if (root == null) {
+            return list;
+        }
+        que.addLast(root);
+        while (!que.isEmpty()) {
+            List<Integer> levelList = new ArrayList<>();
+            int levelSize = que.size();
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode peek = que.peekFirst();
+                levelList.add(que.pollFirst().val);
+                if (peek.left != null) {
+                    que.addLast(peek.left);
+                }
+                if (peek.right != null) {
+                    que.addLast(peek.right);
+                }
+            }
+            list.add(levelList);
+        }
+        
+        List<List<Integer>> result = new ArrayList<>();      //最后反转结果输出。
+        for (int i = list.size() - 1; i >= 0; i-- ) {
+            result.add(list.get(i));
+        }
+        return result;
+    }
+}
