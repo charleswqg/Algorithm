@@ -1,0 +1,50 @@
+link: https://leetcode.cn/problems/average-of-levels-in-binary-tree/description/
+
+
+求二叉树每一层的平均值，同样是层序遍历。只不过输出list不记录每个元素，而是内层循环不断求和，出去/层的len。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<Double> averageOfLevels(TreeNode root) {
+        if(root==null){
+            return new ArrayList<>();
+        }
+        List<Double> list=new ArrayList<>();
+        Queue<TreeNode> queue=new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()){
+            double sum=0.0;
+            int len=queue.size();
+            double b=(double)len;
+            while(len>0){
+                TreeNode cur=queue.poll();
+                if(cur!=null){
+                    sum+=cur.val;
+                    if(cur.left!=null){
+                    queue.add(cur.left);
+                    }
+                    if(cur.right!=null){
+                    queue.add(cur.right);
+                    }
+                }
+                len--;
+            }
+            list.add(sum/b);
+        }
+        return list;
+    }
+}
