@@ -1,0 +1,43 @@
+link: https://leetcode.cn/problems/minimum-depth-of-binary-tree/description/
+
+继续套皮，只不过操作的时候判断当前节点的左右儿子是否同时空，如果空，直接返回当前深度，默认root是1.
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public int minDepth(TreeNode root) {
+        if (root == null)   return 0;
+        Queue<TreeNode> que = new LinkedList<>();
+        que.offer(root);
+        int depth = 0;
+        while (!que.isEmpty())
+        {
+            int len = que.size();
+            depth++;
+            while (len > 0)
+            {
+                TreeNode node = que.poll();
+                if(node.left==null&&node.right==null){
+                    return depth;
+                }
+                if (node.left != null)  que.offer(node.left);
+                if (node.right != null) que.offer(node.right);
+                len--;
+            }
+        }
+        return depth;
+    }
+}
