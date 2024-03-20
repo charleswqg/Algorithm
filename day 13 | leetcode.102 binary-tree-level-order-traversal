@@ -1,0 +1,48 @@
+link: https://leetcode.cn/problems/binary-tree-level-order-traversal/description/
+
+二叉树遍历新思路：像图的bfs一样，广度优先，每层遍历完了再进下一层。
+注意两层循环，外层控制哪一层（记录当前层需要操作的节点个数），内层进行操作（节点出队列记录，放左右儿子进队列）。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+ 
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if(root==null){
+            return new ArrayList<>();
+        }
+        List<List<Integer>> finalResult=new ArrayList<>();
+        Queue<TreeNode> queue=new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()){
+            int len=queue.size();      //记录二叉树当前层要操作几个节点，内层循环次数
+            List<Integer> tempList=new ArrayList<>();
+            while(len>0){  //每一层的操作，把当前层节点（队列中）取出，遍历，把他的儿子（下一层的节点）放进队列，这样内层循环结束时，队列里的元素就是当前层的下一层（儿子们），结果放进result，退回到外层循环。进入下一层...
+                TreeNode cur=queue.poll();
+                tempList.add(cur.val);
+                if(cur.left!=null){
+                    queue.add(cur.left);
+                }
+                if(cur.right!=null){
+                    queue.add(cur.right);
+                }
+                len--;
+            }
+            finalResult.add(tempList);
+        }
+        return finalResult;
+    }
+}
