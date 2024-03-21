@@ -1,0 +1,36 @@
+link: https://leetcode.cn/problems/maximum-depth-of-n-ary-tree/description/
+
+基本写出来了，同二叉树最大深度后序递归法。只不过是for each循环找到当前节点儿子们的最大深度，然后+1。
+
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public List<Node> children;
+
+    public Node() {}
+
+    public Node(int _val) {
+        val = _val;
+    }
+
+    public Node(int _val, List<Node> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+*/
+
+class Solution {
+    public int maxDepth(Node root) {
+        if(root==null){
+            return 0;
+        }
+        int curHeight=0;
+        for(Node child: root.children){
+            int cur=maxDepth(child);
+            curHeight=Math.max(cur,curHeight);
+        }
+        return curHeight+1; 
+    }
+}
