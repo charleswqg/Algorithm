@@ -1,6 +1,7 @@
 link: https://leetcode.cn/problems/maximum-depth-of-binary-tree/
 
 继续套皮，每次内层循环结束（当前层结束），深度++
+深度是（从上往下）根节点到到叶子结点最长距离，高度则是从下往上，叶子节点要上去几层才能到当前节点。
 
 /**
  * Definition for a binary tree node.
@@ -36,5 +37,20 @@ class Solution {
             depth++;
         }
         return depth;
+    }
+}
+
+也可以用后序遍历左右中（中表示单层处理逻辑）。这个其实求的是高度，但二叉树的深度就是从叶子到根节点的高度。
+class solution {
+    /**
+     * 递归法
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {    //终止条件
+            return 0;
+        }
+        int leftDepth = maxDepth(root.left);
+        int rightDepth = maxDepth(root.right);
+        return Math.max(leftDepth, rightDepth) + 1;
     }
 }
