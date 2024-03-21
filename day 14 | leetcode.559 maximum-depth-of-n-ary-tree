@@ -1,6 +1,7 @@
 link: https://leetcode.cn/problems/maximum-depth-of-n-ary-tree/description/
 
-基本写出来了，同二叉树最大深度后序递归法。只不过是for each循环找到当前节点儿子们的最大深度，然后+1。
+基本写出来了，同二叉树最大深度后序递归法。只不过是for each循环找到当前节点儿子们的最大深度，然后+1（表示当前循环层高度为当前儿子的最大高度+1），
+返回上一层递归（返回当前的父节点循环中）
 
 /*
 // Definition for a Node.
