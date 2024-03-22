@@ -1,0 +1,38 @@
+link: https://leetcode.cn/problems/sum-of-left-leaves/description/
+
+
+这道题用递归和迭代都行！但是我自己没做出来hh
+关键是如何判断左叶子节点。（执行逻辑条件）这个节点不能通过自己判断自己，应该是父节点判断子节点。
+
+首先是递归，因为要返回左右子树的左叶子和，所以还是左右中，后序。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public int sumOfLeftLeaves(TreeNode root) {
+        if(root==null){
+            return 0;
+        }
+        int leftValue=sumOfLeftLeaves(root.left);
+        int rightValue=sumOfLeftLeaves(root.right);      //求和，肯定是信仰之跃到左右子树底，然后处理base，最后相加返回。
+        int midValue=0;
+        if(root.left!=null && root.left.left==null && root.left.right==null){      //这里看到，当前节点的左儿子不是空，左儿子的儿子都是空，说明这个儿子是左叶子节点。
+            midValue=root.left.val;
+        }
+        int sum=midValue+leftValue+rightValue;          //此处求和，返回的是左右子树的左叶子之和，还有通过当前节点判断出来的可能左叶子的值（类似于自己加左右再返回上一层）。
+        return sum;
+    }
+}
