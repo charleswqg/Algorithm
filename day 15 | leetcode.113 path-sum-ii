@@ -9,6 +9,7 @@ path始终只有一个，在遍历的过程中往左右试试（加左右儿子�
 到头了不行就不把当前path加进result，直接往上一层的节点return，删除当前叶子结点（也可能往上回要删除非叶子hh，因为当前节点，也是上一层节点的左或右！！当前节点执行完左右递归了，也就等于上一层节点的左或右执行完了，也要被remove）
 
 这个方法传递参数的方式要注意，其实targetsum一直都没变，因为传进去的是targetsum-val，而不是直接传targetsum。
+换句话说，每个递归函数（父和子）的targetsum是独立的，互不影响。
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -58,7 +59,17 @@ class Solution {
 在这个代码中，我选择进入节点就直接更新targetsum，同时直接传targetsum。
 而不是像上面一样，（传递参数targetsum-root.val）
 因此相应的，在返回上一层的时候，需要把targetsum加回当前节点的值。保证程序返回上一层之前，targetsum加回去就行。（注意多个return位置）
-可以说更好地理解了回溯的思想！！！！！真棒！！！！！
+可以说更好地理解了回溯的思想！！！！！真棒  xxxxxxx
+
+我不棒qwq，其实代码里面把targetsum不回溯也没问题，因为方法传递的基本数据类型其实是复制品，子节点改变了targetsum，只属于他自己。不会影响父节点的targetsum！！！
+反而path作为linkedlist是引用数据类型，传递的是地址，所以需要回溯！！！！！
+这回才是真棒！！！！！！！
+
+
+
+在Java中，基本数据类型（如int）作为参数传递给方法时，传递的是值的副本，而不是变量本身。
+因此，当你在递归调用中修改参数的值时，只会修改该方法内部的副本，不会影响到调用该方法的地方的原始值。
+这就是为什么即使你在子节点的递归调用中修改了 targetsum 的值，但是并不会影响到父节点的 targetsum 的原因。
 
 class Solution {
     public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
@@ -78,7 +89,7 @@ class Solution {
             if (targetSum==0) {                               //进来就减过val了，所以直接和0比。
                 res.add(new ArrayList<>(path));
             }
-            targetSum += root.val;                            //这样targetsum也需要回溯！！！，每个return之前都要保证回溯了。
+//     targetSum += root.val;                            //这样targetsum也需要回溯！！！，每个return之前都要保证回溯了。（没有用！因为基本数据类型穿的是值，父子不影响）
             return; // 如果和不为 targetSum，返回
         }
         if (root.left != null) {
@@ -89,6 +100,6 @@ class Solution {
             preorderdfs(root.right, targetSum, res, path);
             path.remove(path.size() - 1); // 回溯     
         }
-        targetSum += root.val;                                //如果不是子节点提前return回溯。而是正常程序执行完，targetsum也不要忘了需要回溯！！！
+// targetSum += root.val;                                //如果不是子节点提前return回溯。（也没用，同上，targetsum是int参数，子节点的递归函数改变targetsum只影响他自己的函数，不影响他爹的targetsum）
     }
 }
