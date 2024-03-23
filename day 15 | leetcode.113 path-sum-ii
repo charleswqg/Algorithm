@@ -1,0 +1,55 @@
+link: https://leetcode.cn/problems/path-sum-ii/description/
+
+这次尝试使用回溯的思想，但没有实践出来。
+精髓是，到一个节点，先把他加进path，如果符合终止条件，记录，返回上一层，然后把这个节点删除！！！！！！（无论这个节点符不符合要求（加没加进最终result），返回上一层都要去掉这个点）然后继续返回那层的操作（往右找）。
+
+
+这里path是一个linkedlist，result是一群linkedlist组成的arraylist，也就是最后输出的路径集合。
+path始终只有一个，在遍历的过程中往左右试试（加左右儿子），（子节点也就是子树，因为递归不断往下）
+到头了不行就不把当前path加进result，直接往上一层的节点return，删除当前叶子结点（也可能往上回要删除非叶子hh，因为当前节点，也是上一层节点的左或右！！当前节点执行完左右递归了，也就等于上一层节点的左或右执行完了，也要被remove）
+
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res; // 非空判断
+        List<Integer> path = new LinkedList<>();
+        preorderdfs(root, targetSum, res, path);
+        return res;
+    }
+
+    public void preorderdfs(TreeNode root, int targetSum, List<List<Integer>> res, List<Integer> path) {
+        path.add(root.val);    //这个是每层的操作，把当前节点先加进path。
+        // 遇到了叶子节点
+        if (root.left == null && root.right == null) {
+            // 找到了和为 targetSum 的路径
+            if (targetSum - root.val == 0) {
+                res.add(new ArrayList<>(path));     //如果符合要求，直接记录path进result，再返回。不符合的话，不进result，直接返回。返回后无论如何，path中还带着这个叶子节点，所以要remove了再找其他。
+            }
+            return; // 无论和是不是targetSum，都要返回
+        }
+        if (root.left != null) {                   //中左右递归，结束中（当前操作包括add自己进path，不包括自己是终止节点），进左和右递归。先往左看看，无论符不符合要求，return回来都要删掉刚进去的左节点，然后再进右！！
+            preorderdfs(root.left, targetSum - root.val, res, path);
+            path.remove(path.size() - 1); // 回溯，这一步最关键，进行这一步之前，说明当前节点的左子节点（因为递归从下返回，也就等同于左子树遍历完了）被遍历过了，且左子节点还在path中，得把他remove才能看右子节点（递归进右子树）
+        }
+        if (root.right != null) {                 //这里表示，当前节点的左子树遍历完了，该去右子树（子节点）看看了。同样，每个节点return回来，都要从path中移除这个节点。
+            preorderdfs(root.right, targetSum - root.val, res, path);
+            path.remove(path.size() - 1); // 回溯，同左回溯。
+        }
+    }
+}
