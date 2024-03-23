@@ -8,7 +8,7 @@ link: https://leetcode.cn/problems/path-sum-ii/description/
 path始终只有一个，在遍历的过程中往左右试试（加左右儿子），（子节点也就是子树，因为递归不断往下）
 到头了不行就不把当前path加进result，直接往上一层的节点return，删除当前叶子结点（也可能往上回要删除非叶子hh，因为当前节点，也是上一层节点的左或右！！当前节点执行完左右递归了，也就等于上一层节点的左或右执行完了，也要被remove）
 
-
+这个方法传递参数的方式要注意，其实targetsum一直都没变，因为传进去的是targetsum-val，而不是直接传targetsum。
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -51,5 +51,44 @@ class Solution {
             preorderdfs(root.right, targetSum - root.val, res, path);
             path.remove(path.size() - 1); // 回溯，同左回溯。
         }
+    }
+}
+
+我为了深入理解回溯，更改了一下targetsum的参数传递方式。
+在这个代码中，我选择进入节点就直接更新targetsum，同时直接传targetsum。
+而不是像上面一样，（传递参数targetsum-root.val）
+因此相应的，在返回上一层的时候，需要把targetsum加回当前节点的值。保证程序返回上一层之前，targetsum加回去就行。（注意多个return位置）
+可以说更好地理解了回溯的思想！！！！！真棒！！！！！
+
+class Solution {
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res; // 非空判断
+        List<Integer> path = new LinkedList<>();
+        preorderdfs(root, targetSum, res, path);
+        return res;
+    }
+
+    public void preorderdfs(TreeNode root, int targetSum, List<List<Integer>> res, List<Integer> path) {
+        path.add(root.val);
+        targetSum-=root.val;                                  //这里改了
+        // 遇到了叶子节点
+        if (root.left == null && root.right == null) {
+            // 找到了和为 targetSum 的路径
+            if (targetSum==0) {                               //进来就减过val了，所以直接和0比。
+                res.add(new ArrayList<>(path));
+            }
+            targetSum += root.val;                            //这样targetsum也需要回溯！！！，每个return之前都要保证回溯了。
+            return; // 如果和不为 targetSum，返回
+        }
+        if (root.left != null) {
+            preorderdfs(root.left, targetSum, res, path);     //传递参数也相应的改了
+            path.remove(path.size() - 1); // 回溯
+        }
+        if (root.right != null) {
+            preorderdfs(root.right, targetSum, res, path);
+            path.remove(path.size() - 1); // 回溯     
+        }
+        targetSum += root.val;                                //如果不是子节点提前return回溯。而是正常程序执行完，targetsum也不要忘了需要回溯！！！
     }
 }
