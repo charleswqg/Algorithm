@@ -1,0 +1,48 @@
+link: https://leetcode.cn/problems/path-sum/
+
+没思路，号称有回溯的思想。
+每次递归减去当前层的元素，然后左不为空进左，如果左找到了，直接返回true给这一层。这样就直接跳过这一层往右找的操作，直接返回给上一层。
+如果左找不到，再去找右，如果右也找不到，只能最好返回false，表示经过这一个节点的所有路径都g了。
+终止条件除了空节点，还有叶子结点（左右儿子为空）是否sum减到了0。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+ 
+class solution {
+   public boolean haspathsum(treenode root, int targetsum) {
+        if (root == null) {
+            return false;
+        }
+        targetsum -= root.val;
+        // 叶子结点
+        if (root.left == null && root.right == null) {
+            return targetsum == 0;
+        }
+        if (root.left != null) {
+            boolean left = haspathsum(root.left, targetsum);
+            if (left) {      // 已经找到
+                return true;
+            }
+        }
+        if (root.right != null) {
+            boolean right = haspathsum(root.right, targetsum);
+            if (right) {     // 已经找到
+                return true;
+            }
+        }
+        return false;
+    }
+}
