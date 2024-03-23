@@ -1,0 +1,53 @@
+link: https://leetcode.cn/problems/balanced-binary-tree/
+
+这道题想到了树的高度，但迭代没写出来。
+同样是后序遍历左右中（操作），如果左右子树高度差大于1，返回-1。
+否则当前节点的高度就是左右子树高度大的+1。
+注意如果左右子树有高度为-1的了，表示整个树不可能平衡，所以直接返回-1。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+        int result=getHeight(root);
+        if(result==-1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    
+    //这个方法用来计算当前每一层二叉树的高度，如果返回-1，表示左右高度差大于1了。
+    int getHeight(TreeNode root){
+        if(root==null){
+            return 0;
+        }
+        int leftHeight=getHeight(root.left);
+        if(leftHeight==-1){
+            return -1;
+        }
+        int rightHeight=getHeight(root.right);
+        if(rightHeight==-1){
+            return -1;
+        }
+        if(leftHeight-rightHeight>1||rightHeight-leftHeight>1){
+            return -1;
+        }
+        else{
+            return 1+Integer.max(leftHeight,rightHeight);
+        }
+    }
+}
