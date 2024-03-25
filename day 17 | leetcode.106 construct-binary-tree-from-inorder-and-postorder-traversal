@@ -1,0 +1,70 @@
+link: https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/description/
+
+这道题没想到，关键是明确怎么用俩数组构造树，左闭右开（区间一致就行）（表示区间右边界不用实际操作，比如arr[arr.length]）
+步骤是，取后序数组最后一个元素为当前节点。
+然后去中序数组中找到这个元素，他下标之前的元素是他左子树，下标之后的是右子树。
+然后处理后序数组，后序数组也分左右两部分。后序数组左是从后序数组的头到中序数组分割点个数的元素（中序左有3个元素（头到下标3，下标3是分割点元素，开区间不被实际处理），后序左也得是3个。但如果左闭右开，需要是头到下标3），
+后序数组的右是分割点下标右侧（下标4）直到后序数组结尾，刨除当前元素（右开区间就是length-1，最后一个元素不被考虑）。
+然后递归进左右，返回的节点是当前的左和右。
+
+        中12345
+        后15234
+        找到后序最后一个元素4，进中序找到4，下标3，中序分成【0，3 ）和【4，5）
+        后序对应分成【0，3)和 【3，4）
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+ //左闭右开，数组的end实际上不被操作。
+class Solution {
+  public TreeNode buildTree(int[] inorder, int[] postorder) {
+      if(postorder.length == 0 || inorder.length == 0){
+        return null;
+      }
+      return buildHelper(inorder, 0, inorder.length, postorder, 0, postorder.length);      //可以看到右侧end实际上直接传的length
+    }
+  
+    private TreeNode buildHelper(int[] inorder, int inorderStart, int inorderEnd, int[] postorder, int postorderStart, int postorderEnd){   
+        if(postorderStart == postorderEnd)
+            return null;
+        int rootVal = postorder[postorderEnd - 1];
+        TreeNode root = new TreeNode(rootVal);
+        
+        int middleIndex;
+        for (middleIndex = inorderStart; middleIndex < inorderEnd; middleIndex++){     //小于end，明确不会操作到end元素，右开。
+            if(inorder[middleIndex] == rootVal)
+                break;     //for循环先执行方法体，再i++，如果break，i就不会++。
+        }
+
+        //切割中序数组为中序左和中序右
+        int leftInorderStart = inorderStart; 
+        int leftInorderEnd = middleIndex;
+        int rightInorderStart = middleIndex + 1;   //除去分割点
+        int rightInorderEnd = inorderEnd;
+
+        //切割后序数组,左右个数和中序相同。
+        int leftPostorderStart = postorderStart;          
+        int leftPostorderEnd = postorderStart + (middleIndex - inorderStart);      //就是中序数组分割点元素到头的长度（他的下标），同样作为end不会被操作。
+        int rightPostorderStart = leftPostorderEnd;  //后序左区间的end是开，所以后序右区间要处理它。
+        int rightPostorderEnd = postorderEnd - 1;    //除去当前节点
+
+        //中序左和后序左，中序右和后序右数组，分别进进左右递归，返回的节点是当前的左和右儿子。
+        root.left = buildHelper(inorder, leftInorderStart, leftInorderEnd,  postorder, leftPostorderStart, leftPostorderEnd);
+        root.right = buildHelper(inorder, rightInorderStart, rightInorderEnd, postorder, rightPostorderStart, rightPostorderEnd);
+
+        return root;
+    }  
+}
+
