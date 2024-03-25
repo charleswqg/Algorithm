@@ -1,0 +1,46 @@
+link: https://leetcode.cn/problems/validate-binary-search-tree/description/
+
+这道题有坑，我完美入坑hh。想到了递归，但不知用前中后什么顺序。
+
+精髓是：BST的中序遍历结果应该是从小到大递增，所以判断是否是BST，应该中序遍历。
+用maxvalue存放当前最大的元素（初始化为最小值）。
+先进左递归，然后由于BST是递增的，中序遍历中的中（每层递归的操作过程），应该判断当前节点元素大于刚才遍历的元素（maxvalue）才行。然后进右递归。
+最后如果左右递归都返回true，说明是BST。注意maxvalue应该比测试数据的最小值还小（有可能给的测试最小（左下脚节点）是Int.MIN_VALUE,所以用Double.MIN_VALUE才能比他小）。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    // 递归
+    long max=Long.MIN_VALUE;
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        
+        // 左
+        boolean left = isValidBST(root.left);
+        
+        // 中
+        if (root.val <= max) {
+            return false;
+        }
+        max = root.val;    //更新最小值为当前元素，意味着后序中序遍历递归到的元素要比当前的大，才符合BST。（BST中序遍历，得到的元素从小到大递增）
+        
+        // 右
+        boolean right = isValidBST(root.right);
+        return left&&right;
+    }
+}
