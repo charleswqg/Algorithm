@@ -41,7 +41,8 @@ class Solution {
             return null;
         int rootVal = postorder[postorderEnd - 1];
         TreeNode root = new TreeNode(rootVal);
-        
+
+        //找分割点元素下标
         int middleIndex;
         for (middleIndex = inorderStart; middleIndex < inorderEnd; middleIndex++){     //小于end，明确不会操作到end元素，右开。
             if(inorder[middleIndex] == rootVal)
