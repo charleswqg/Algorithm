@@ -1,0 +1,39 @@
+https://leetcode.cn/problems/merge-two-binary-trees/description/
+
+合并两颗二叉树，其实和创建类似，用前序遍历比较好想。
+参数是两个根节点，返回值也是node（需要返回给上一层递归作为左右儿子）。
+终止条件是两个数的当前节点是否为空，如果空，就用另一个。
+单层递归具体操作是求和，创建新树的节点（或者更改两个树中的一个作为结果返回），然后进左右递归，返回值是当前节点的左右儿子。
+最后别忘了返回当前节点给上一层。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+ 
+class Solution {
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        if(root1==null){
+            return root2;
+        }
+        if(root2==null){
+            return root1;
+        }
+        TreeNode root=new TreeNode(0);
+        root.val=root1.val+root2.val;
+        root.left=mergeTrees(root1.left,root2.left);
+        root.right=mergeTrees(root1.right,root2.right);
+        return root;
+    }
+}
