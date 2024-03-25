@@ -1,0 +1,51 @@
+link: https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+
+这道题和中后序数组创建二叉树一样，不过是每次取前序数组的第一个元素，然后同样的操作拆分左右进递归。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    private TreeNode traversal (int[] inorder, int inorderBegin, int inorderEnd, int[] preorder, int preorderBegin, int preorderEnd) {
+        if (preorderBegin == preorderEnd) return null;
+        int rootValue = preorder[preorderBegin];
+        TreeNode root = new TreeNode(rootValue);
+        int delimiterIndex = 0;
+        for (delimiterIndex = inorderBegin; delimiterIndex < inorderEnd; delimiterIndex++) {
+            if (inorder[delimiterIndex] == rootValue) break;
+        }
+        
+        int leftInorderBegin = inorderBegin;
+        int leftInorderEnd = delimiterIndex;
+        int rightInorderBegin = delimiterIndex + 1;
+        int rightInorderEnd = inorderEnd;
+
+        int leftPreorderBegin =  preorderBegin + 1;
+        int leftPreorderEnd = preorderBegin + 1 + delimiterIndex - inorderBegin;
+        int rightPreorderBegin = preorderBegin + 1 + (delimiterIndex - inorderBegin);
+        int rightPreorderEnd = preorderEnd;
+
+        root.left = traversal(inorder, leftInorderBegin, leftInorderEnd,  preorder, leftPreorderBegin, leftPreorderEnd);
+        root.right = traversal(inorder, rightInorderBegin, rightInorderEnd, preorder, rightPreorderBegin, rightPreorderEnd);
+
+        return root;
+    }
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        if (inorder.length == 0 || preorder.length == 0) return null;
+        return traversal(inorder, 0, inorder.length, preorder, 0, preorder.length);
+    }
+}
