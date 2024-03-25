@@ -1,0 +1,68 @@
+link: https://leetcode.cn/problems/search-in-a-binary-search-tree/description/
+
+二叉搜索树的特点是左子树比 当前节点小，右子树大。利用这一性质搜索某个元素会很快，复习一下。
+
+class Solution {
+    // 递归，普通二叉树
+    public TreeNode searchBST(TreeNode root, int val) {
+        if (root == null || root.val == val) {
+            return root;
+        }
+        
+        TreeNode left = searchBST(root.left, val);
+        if (left != null) {
+            return left;
+        }
+        TreeNode right = searchBST(root.right, val);
+        return right;
+    }
+}
+
+class Solution {
+    // 递归，利用二叉搜索树特点，优化
+    public TreeNode searchBST(TreeNode root, int val) {
+        if (root == null || root.val == val) {
+            return root;
+        }
+        if (val < root.val) {
+            return searchBST(root.left, val);
+        } else {
+            return searchBST(root.right, val);
+        }
+    }
+}
+
+class Solution {
+    // 迭代，普通二叉树
+    public TreeNode searchBST(TreeNode root, int val) {
+        if (root == null || root.val == val) {
+            return root;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode pop = stack.pop();
+            if (pop.val == val) {
+                return pop;
+            }
+            if (pop.right != null) {
+                stack.push(pop.right);
+            }
+            if (pop.left != null) {
+                stack.push(pop.left);
+            }
+        }
+        return null;
+    }
+}
+
+class Solution {
+    // 迭代，利用二叉搜索树特点，优化，可以不需要栈
+    public TreeNode searchBST(TreeNode root, int val) {
+        while (root != null)
+            if (val < root.val) root = root.left;
+            else if (val > root.val) root = root.right;
+            else return root;
+        return null;
+    }
+}
