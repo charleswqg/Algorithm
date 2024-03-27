@@ -1,0 +1,70 @@
+https://leetcode.cn/problems/find-mode-in-binary-search-tree/description/
+
+这道题我想的笨办法，hashmap记录元素频次再输出。
+还是要利用bst的性质，中序遍历单调递增，我的评价是看到bst就想到这个性质，用中序递归！！
+代码实现有技巧，count为当前这个元素值的出现次数。maxcount为到目前为止，出现的最大频率次数。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    ArrayList<Integer> resList;
+    int maxCount;
+    int count;
+    TreeNode pre;
+
+    public int[] findMode(TreeNode root) {
+        resList = new ArrayList<>();
+        maxCount = 0;
+        count = 0;
+        pre = null;
+        findMode1(root);
+        int[] res = new int[resList.size()];
+        for (int i = 0; i < resList.size(); i++) {
+            res[i] = resList.get(i);
+        }
+        return res;
+    }
+
+    public void findMode1(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        //左递归
+        findMode1(root.left);
+        //中（当前节点操作）
+        int rootValue = root.val;
+        // 计数，如果第一个节点或和上一个不等，重新计数从1开始。否则当前计数+1.
+        if (pre == null || rootValue != pre.val) {
+            count = 1;
+        } else {
+            count++;
+        }
+        // 更新结果以及maxCount。如果当前节点（元素值）的计数大于之前的max，更新max，清空arraylist（list里面的元素是之前最大频率的元素，被超越了），加新元素值进去。
+        if (count > maxCount) {
+            resList.clear();
+            resList.add(rootValue);
+            maxCount = count;
+            //如果频率相同，list直接加当前，属于同样频率的众数（暂时）
+        } else if (count == maxCount) {
+            resList.add(rootValue);
+        }
+        //无论如何，pre指向当前节点，中结束（当前节点操作）进右递归
+        pre = root;
+
+        findMode1(root.right);
+    }
+}
