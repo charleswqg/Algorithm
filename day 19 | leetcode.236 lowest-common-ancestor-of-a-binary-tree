@@ -1,0 +1,39 @@
+link: https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/description/
+
+说实话没啥思路哈哈，看了答案才知道，挺巧妙的。
+思想是回溯，找到目标了后，往上层返回信息。
+因为要看左右子节点是否是要找的，然后根据左右子树的返回值，确定当前节点要给上一层返回啥，所以后序遍历。
+终止条件是找到节点或空，参数是俩目标节点和要进入递归的节点，返回值是节点。
+
+如果左右都不是空，说明这个节点的左右子树正好是，或者传递回了要找的元素，且在当前节点汇合（也就意味着当前节点是公共祖先），所以返回root就行。
+如果有一边不是空，说明找到了一个，这时要向上层返回不是空的结果（左或右），因为空说明这个子节点和他的子树都没找到，只能回个null给当前。
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) { // 递归结束条件
+            return root;
+        }
+
+        // 后序遍历，left和right分别为左右子递归的返回值，比如可能left就是TreeNode p。
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+        if(left == null && right == null) { // 若未找到节点 p 或 q
+            return null;
+        }else if(left == null && right != null) { // 若找到一个节点，返回那个非空的子节点的返回值（子节点return回来这层的就是要找的那个节点，这层再往上层return那个节点）
+            return right;
+        }else if(left != null && right == null) { // 若找到一个节点
+            return left;
+        }else { // 若找到两个节点，当前节点就是公共祖先
+            return root;
+        }
+    }
+}
