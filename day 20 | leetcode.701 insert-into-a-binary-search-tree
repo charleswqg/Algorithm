@@ -1,0 +1,19 @@
+https://leetcode.cn/problems/insert-into-a-binary-search-tree/description/
+
+这里巧妙的一点就是，直接用root.right和left来接子递归的返回节点。往下找到空了，返回的是新节点，接上了。
+然后一路往上返回的是root（也就是当前节点），相当于没变化。
+
+class Solution {
+    public TreeNode insertIntoBST(TreeNode root, int val) {
+        if (root == null) // 如果当前节点为空，也就意味着val找到了合适的位置，此时创建节点返回
+            return new TreeNode(val);
+        if (root.val < val){
+            root.right = insertIntoBST(root.right, val); // 递归创建右子树
+        }
+        else if (root.val > val){
+            root.left = insertIntoBST(root.left, val); // 递归创建左子树
+        }
+
+        return root;
+    }
+}
