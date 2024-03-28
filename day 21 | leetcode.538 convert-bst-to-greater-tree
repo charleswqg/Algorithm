@@ -1,0 +1,25 @@
+link: https://leetcode.cn/problems/convert-bst-to-greater-tree/description/
+
+这道题代码很简单，但我没想到思路。累加树就是每个节点的值，变成大于等于他的所有节点和。
+还是利用BST的性质，中序遍历小到大，所以这次返中序，右中左，就是从大到小。中的操作是sum加上当前节点的值，更新sum，更新节点为sum。
+这样返中序表遍历就从大到小遍历了整个树，也求和赋值了。
+
+class Solution {
+    int sum;
+    public TreeNode convertBST(TreeNode root) {
+        sum = 0;
+        convertBST1(root);
+        return root;
+    }
+
+    // 按右中左顺序遍历，累加即可
+    public void convertBST1(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        convertBST1(root.right);
+        sum += root.val;
+        root.val = sum;
+        convertBST1(root.left);
+    }
+}
