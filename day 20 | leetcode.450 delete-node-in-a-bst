@@ -2,6 +2,7 @@
 
 这道题比较复杂，删除节点考虑的情况多。
 递归还是和增加节点一样，用right和left接住子递归的返回节点（无事发生返回本身，相当于没变）
+可以看出有返回值，这样删除很方便。
 用if是因为不需要遍历整个树，找到节点删了就行，线路是固定的，只进一个递归。否则左右递归都要进。
 
 找到了要删除的节点时：如果他的左右儿子都是空，相当于叶子，直接删，return null。（代码里把这种情况放进一个是空了，返回的另一个也是null，就符合这种情况）
@@ -38,7 +39,8 @@ class Solution {
         while (cur.left != null) {
           cur = cur.left;
         }
-        cur.left = root.left;
+        cur.left = root.left;     //让要被删除节点的左儿子成为他右儿子的最左元素的左儿子。
+                                        //然后返回右儿子（没向上一层返回自己，上一层的left或者right就接不到自己，接到了儿子，成为新的right或left，变相删除
         root = root.right;
         return root;
       }
@@ -47,4 +49,29 @@ class Solution {
     if (root.val < key) root.right = deleteNode(root.right, key);
     return root;
   }
+}
+
+这里再给出普通二叉树的删除节点操作，还是有返回值node给上一层递归。
+删除操作分两次，遍历到的节点（如果是叶子，右子树为空，返回左也是空，相当于删了）
+如果不是叶子（左非空右空，就直接返回左，变相删除），右非空左空或左右都不是空的话，先把他和他的右子树的最左边叶子交换值，然后继续进左右递归，
+最后一定会再遍历到这个叶子节点（此时他的值已经被换成了要删除的节点），而且他满足right==null，此时向他的父节点return null 被删除了就。
+class Solution {
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if (root == null) return root;
+        if (root.val == key) {
+            if (root.right == null) {
+                return root.left;
+            }
+            TreeNode cur = root.right;
+            while (cur.left != null) {
+                cur = cur.left;
+            }
+            int temp = root.val;
+            root.val = cur.val;
+            cur.val = temp;
+        }
+        root.left = deleteNode(root.left, key);
+        root.right = deleteNode(root.right, key);
+        return root;
+    }
 }
