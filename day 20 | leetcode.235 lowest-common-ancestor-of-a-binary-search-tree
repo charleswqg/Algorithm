@@ -1,0 +1,40 @@
+https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
+
+这道题没有想到可以简单，因为BST有序，两个节点的公共父，一定大于小的，小于大的。
+同时，如果从上往下遍历，第一次找到这样一个节点，直接返回。
+找到了这样的节点，说明要找的p和q在这个节点的左右子树中，往下的话，就失去一个节点了。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+ 
+递归
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);
+        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);
+        return root;
+    }
+}
+
+迭代
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        while (true) {
+            if (root.val > p.val && root.val > q.val) {
+                root = root.left;
+            } else if (root.val < p.val && root.val < q.val) {
+                root = root.right;
+            } else {
+                break;
+            }
+        }
+        return root;
+    }
+}
