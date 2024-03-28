@@ -1,0 +1,22 @@
+link: https://leetcode.cn/problems/trim-a-binary-search-tree/description/
+这道题有点细节，关键是如果当前节点在边界外，不能单纯返回null ！！！
+因为如果high是5，当前是8，当前节点和他的右子树都可以删除了，但当前节点的左子树可能比5小！！BST只保证左子树比当前节点8小，不一定比5小。
+所以遇到边界情况，要返回这个节点的左或右子树递归（变相删除这个节点和另一半子节点）给上一层。
+
+class Solution {
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val < low) {
+            return trimBST(root.right, low, high);
+        }
+        if (root.val > high) {
+            return trimBST(root.left, low, high);
+        }
+        // root在[low,high]范围内
+        root.left = trimBST(root.left, low, high);
+        root.right = trimBST(root.right, low, high);
+        return root;
+    }
+}
