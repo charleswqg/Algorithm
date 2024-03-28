@@ -1,0 +1,42 @@
+https://leetcode.cn/problems/convert-sorted-array-to-binary-search-tree/description/
+
+如果根据数组构造一棵二叉树。本质就是寻找分割点，分割点作为当前节点，然后递归左区间和右区间。
+
+这个题应该想出来，所谓的平衡，实际上就是利用递增数组，每次二分。
+取中间节点为当前节点，然后左右的子数组进左右递归，用当前节点的left和right接返回值。
+
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return sortedArrayToBST(nums, 0, nums.length);
+    }
+    
+    public TreeNode sortedArrayToBST(int[] nums, int left, int right) {
+        if (left >= right) {
+            return null;
+        }
+        if (right - left == 1) {
+            return new TreeNode(nums[left]);
+        }
+        int mid = left + (right - left) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = sortedArrayToBST(nums, left, mid);
+        root.right = sortedArrayToBST(nums, mid + 1, right);
+        return root;
+    }
+}
