@@ -1,0 +1,50 @@
+/https://leetcode.cn/problems/delete-node-in-a-bst/description/
+
+这道题比较复杂，删除节点考虑的情况多。
+递归还是和增加节点一样，用right和left接住子递归的返回节点（无事发生返回本身，相当于没变）
+用if是因为不需要遍历整个树，找到节点删了就行，线路是固定的，只进一个递归。否则左右递归都要进。
+
+找到了要删除的节点时：如果他的左右儿子都是空，相当于叶子，直接删，return null。（代码里把这种情况放进一个是空了，返回的另一个也是null，就符合这种情况）
+如果左或右只有一个是空，需要返回另一个。左儿子是空，就向上一层（要删除节点的父节点层）返回这个要删除节点的右儿子（返回去正好被要删除节点的父节点的left或者right接住）。
+如果左右儿子都不是空，比较复杂！
+因为BST左子树所有元素都小于右子树所有元素（比右子树最小值，还要小），所以可以让左子树（要删除节点的左儿子），成为右子树最小值的左儿子。右子树最小值也就是从右节点开始，一路往左走到头。
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+ 
+class Solution {
+  public TreeNode deleteNode(TreeNode root, int key) {
+    if (root == null) return root;
+    if (root.val == key) {
+      if (root.left == null) {
+        return root.right;
+      } else if (root.right == null) {
+        return root.left;
+      } else {
+        TreeNode cur = root.right;
+        while (cur.left != null) {
+          cur = cur.left;
+        }
+        cur.left = root.left;
+        root = root.right;
+        return root;
+      }
+    }
+    if (root.val > key) root.left = deleteNode(root.left, key);
+    if (root.val < key) root.right = deleteNode(root.right, key);
+    return root;
+  }
+}
