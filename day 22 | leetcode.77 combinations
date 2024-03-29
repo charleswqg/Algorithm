@@ -1,0 +1,34 @@
+link： https://leetcode.cn/problems/combinations/description/
+
+进入回溯算法，虽然二叉树用到了，但还是不好想，尤其是循环套递归。
+其实，循环就是遍历这一层（当前这个位置）可能成为结果元素（比如1234取2个元素，第一层循环就是二元组的第一个元素选什么，可以是1到4.）这里start表示当前层（当前位置可选的元素从start开始，逐渐++）
+然后进递归，第一个元素选了1，那剩下的元素就是234可选，进入start=2（从2开始选）的递归，进循环开始选第二个数。选好了记录结果，记得删除当前元素，再返回上一层（第一个元素是1的二元组选完了，该i++变成2了）
+
+for就是找当前位置需要的元素
+进递归就是去找当前位置的下一个元素，进了递归也是for，意思是找下一个元素可能是多少。
+
+比如1234找2个，刚开始start=i=1，表示第一个元素从1开始往后找，然后第一次让第一个元素为1，进递归（从i+1开始）找下一个元素可能是谁（2，3，4），进了递归是循环看2，3，4行不行。
+然后先add 2，再进3看3和4还需不需要，发现个数够了，所以记录返回start=2=i的时候，此时第二个元素可以是2且被记录，接下来i++变成3，表示第二个元素是3行不行，进递归同理。
+到4也成立后，第一层的递归（start=2）就结束了，此时return回第一层递归，表示i=start=1（第一个元素为1的情况处理完了）记得回溯！！因为第一个元素是1处理完了，temp还存在1需要删除。
+然后1++，处理第一个元素是2的情况，这样下一个元素（第二个得从3开始）进递归。
+
+class Solution {
+        List<Integer> temp=new ArrayList<>();
+        List<List<Integer>> result=new ArrayList<>();
+    public List<List<Integer>> combine(int n, int k) {
+        backtracking(1,n,k);
+        return result;
+    }
+    public void backtracking(int start,int n,int k){
+        if(temp.size()==k){
+            result.add(new ArrayList(temp));
+            return;
+        }
+        for(int i=start;i<=n;i++){   //这里可以优化成，i <= n - (k - temp.size())+1。举例表示如果要4个元素选3个，i=2是极限，i=3元素就必然不够了，无法出现结果。
+            temp.add(i);
+            backtracking(i+1,n,k);
+            temp.remove(temp.size()-1);
+        }
+        return;
+    }
+}
