@@ -1,0 +1,44 @@
+https://leetcode.cn/problems/letter-combinations-of-a-phone-number/
+
+同样是回溯思想，不过传递的参数不是遍历的开始下标了，而是digits这个字符串遍历到的位置（23432）num=0时，对应的charAt（0）就是字符2。
+然后通过这个字符去numString数组里找可能对应的字符，再循环遍历这个字符串获得可能的字符，相当于遍历结果（也是digits的）第0位可能的元素，然后进递归看下一位对应的字符有啥，遍历添加。
+最后一次添加元素的时候，num是length-1，但判断终止要进下一层递归，传递的是当前层num+1，所以终止条件是num=digits.length()。
+num是digits当前位的下标，可以根据num获得digits当前位的数字是多少，进而获得numString中当前数字对应的键盘可能值。
+class Solution {
+
+    //设置全局列表存储最后的结果
+    List<String> list = new ArrayList<>();
+
+    public List<String> letterCombinations(String digits) {
+        if (digits == null || digits.length() == 0) {
+            return list;
+        }
+        //初始对应所有的数字，为了直接对应2-9，新增了两个无效的字符串""
+        String[] numString = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+        //迭代处理
+        backTracking(digits, numString, 0);
+        return list;
+
+    }
+
+    //每次迭代获取一个字符串，所以会设计大量的字符串拼接，所以这里选择更为高效的 StringBuild
+    StringBuilder temp = new StringBuilder();
+
+    //比如digits如果为"23",num 为0，则str表示2(digits字符串第0位的数字可能表示的字母集合)对应的字符串abc
+    public void backTracking(String digits, String[] numString, int num) {
+        //遍历全部一次记录一次得到的字符串
+        if (num == digits.length()) {
+            list.add(temp.toString());
+            return;
+        }
+        //str 表示当前num对应的字符串
+        String str = numString[digits.charAt(num) - '0'];
+        for (int i = 0; i < str.length(); i++) {
+            temp.append(str.charAt(i));
+            //进递归找结果字符串（根据digits的下一位，用num+1表示）下一位可能是啥
+            backTracking(digits, numString, num + 1);
+            //剔除末尾的继续尝试
+            temp.deleteCharAt(temp.length() - 1);
+        }
+    }
+}
