@@ -1,0 +1,39 @@
+link:https://leetcode.cn/problems/combination-sum-ii/description/
+
+这道题也是组合，但关键是如何去重。这里注意，一个结果内部可以有重复元素（只要保证i+1，不选自己就行），也就是每条树枝可以有重复。
+但是，结果之间不能有重复，意思是，树枝之间不能重复。也就是说，当前位置的元素（一个for内）不能重复，但递归到的可以允许重复，只要不是自己就行。
+同理for用来寻找当前位置（层）可能的元素，从start开始往后遍历，然后进递归遍历下个位置可能的元素。重复的时候，i一定不是第一个，且i位置的值和i-1的值相同（数组要先排序才行），这样直接continue，看下一个元素行不行。
+class Solution {
+  List<List<Integer>> res = new ArrayList<>();
+  LinkedList<Integer> path = new LinkedList<>();
+  int sum;
+
+  public List<List<Integer>> combinationSum2( int[] candidates, int target ) {
+    //为了将重复的数字都放到一起，所以先进行排序
+    Arrays.sort( candidates );
+    backTracking( candidates, target, 0 );
+    return res;
+  }
+  
+  private void backTracking( int[] candidates, int target, int start ) {
+    if ( sum == target ) {
+      res.add( new ArrayList<>(path) );
+      return;
+    }
+
+    for ( int i = start; i < candidates.length && sum + candidates[i] <= target; i++ ) {
+      //正确剔除重复解的办法,start是当前位置可以选的第一个元素，然后可选的元素从start开始往后
+      //跳过同一树层使用过的元素，如果i大于start，说明当前找的元素不是可能的第一个，有可能重复。
+      if ( i > start && candidates[i] == candidates[i - 1] ) {
+        continue;
+      }
+      sum += candidates[i];
+      path.add( candidates[i] );
+      // i+1 代表当前组内元素只选取一次
+      backTracking( candidates, target, i + 1 );
+      int temp = path.getLast();
+      sum -= temp;
+      path.removeLast();
+    }
+  }
+}
