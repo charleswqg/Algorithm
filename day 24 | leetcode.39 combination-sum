@@ -1,0 +1,62 @@
+https://leetcode.cn/problems/combination-sum/description/
+
+这道题自己做出来了！！其实和之前的组合，差别就是可以有重复元素在答案里。
+所以当前层for循环选一个元素后，如果要递归进下一层选下一个元素，可以从当前元素开始选，不用从当前i+1选。
+
+class Solution {
+    List<Integer> temp=new ArrayList<>();
+    List<List<Integer>> result=new ArrayList<>();
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        int sum=0;
+        int startIndex=0;
+        backTracking(candidates,target,sum,startIndex);
+        return result;
+    }
+
+    public void backTracking(int[] candidates, int target,int sum, int startIndex){
+        if(sum>target){
+            return;
+       }
+        if(sum==target){
+            result.add(new ArrayList(temp));
+            return;
+        }
+        for(int i=startIndex;i<candidates.length;i++){
+            sum+=candidates[i];
+            temp.add(candidates[i]);
+            backTracking(candidates,target,sum,i);
+            sum-=candidates[i];
+            temp.remove(temp.size()-1);
+        }
+        return;
+    }
+}
+
+优化：给数组排序，for循环时判断当前和是否已经大于target了，如果大于（仅限排序了的数组，因为往后遍历的值都比当前的还大）直接返回。
+
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(candidates); // 先进行排序
+        backtracking(res, new ArrayList<>(), candidates, target, 0, 0);
+        return res;
+    }
+
+    public void backtracking(List<List<Integer>> res, List<Integer> path, int[] candidates, int target, int sum, int idx) {
+        // 找到了数字和为 target 的组合
+        if (sum == target) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+
+        for (int i = idx; i < candidates.length; i++) {
+            // 如果 sum + candidates[i] > target 就终止遍历
+            if (sum + candidates[i] > target) break;
+            path.add(candidates[i]);
+            backtracking(res, path, candidates, target, sum + candidates[i], i);
+            path.remove(path.size() - 1); // 回溯，移除路径 path 最后一个元素
+        }
+    }
+}
+
