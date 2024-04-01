@@ -1,0 +1,93 @@
+link: https://leetcode.cn/problems/palindrome-partitioning/description/
+这道题没思路，关键是把切割转化成组合来考虑。
+切割的每一刀，其实就是组合问题当前位置找的元素，切割出的子串，就是从start（这一层可以开始切的元素startIndex）到实际切这一刀的元素（for循环遍历到的实际位置），组成的字符串。
+判断回文左右指针往中间移动就行。
+
+还是要记住for指的是当前位置要找的元素（每一层，范围是startIndex开始到数组末尾）（比如第一层for就是result的第一个元素）。
+进递归是在当前位置元素往后一个的基础上（从当前位置i的下一个位置开始），找下一个元素可能是哪个。
+
+class Solution {
+    List<List<String>> lists = new ArrayList<>();
+    Deque<String> deque = new LinkedList<>();
+    public List<List<String>> partition(String s) {
+        backTracking(s, 0);
+        return lists;
+    }
+    private void backTracking(String s, int startIndex) {
+        //如果起始位置大于s的大小，说明找到了一组分割方案
+        if (startIndex >= s.length()) {
+            lists.add(new ArrayList(deque));
+            return;
+        }
+        for (int i = startIndex; i < s.length(); i++) {
+            //如果是回文子串，则记录，substring左闭右开，右边+1才能截上。
+            if (isPalindrome(s, startIndex, i)) {
+                String str = s.substring(startIndex, i+1);
+                deque.addLast(str);
+            } else {
+                continue;
+            }
+            //起始位置后移，保证不重复
+            backTracking(s, i + 1);
+            //回溯
+            deque.pollLast();
+        }
+    }
+    //判断是否是回文串
+    private boolean isPalindrome(String s, int startIndex, int end) {
+        for (int i = startIndex, j = end; i < j; i++, j--) {
+            if (s.charAt(i) != s.charAt(j)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+优化就是动态规划，关键是那个公式。如果想要ij回文，那么i+1到j-1肯定回文且arr[i]=arr[j]。
+构造出01矩阵再递归就方便多了，不用每次都while比较是否回文。
+
+class Solution {
+    List<List<String>> result = new ArrayList<>();
+    List<String> path = new ArrayList<>();
+    boolean[][] isPalindrome;
+    
+    public List<List<String>> partition(String s) {
+        computePalindrome(s); //动态规划求矩阵，ij表示字符串从i到j是否回文,0不回1回。
+        backtracking(s, 0);
+        return result;
+    }
+
+    private void backtracking(String s, int startIndex) {
+        if (startIndex >= s.length()) {
+            result.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = startIndex; i < s.length(); i++) {
+            if (isPalindrome[startIndex][i]) {
+                String str = s.substring(startIndex, i + 1);
+                path.add(str);
+            } else {
+                continue;
+            }
+            backtracking(s, i + 1);
+            path.remove(path.size() - 1);
+        }
+    }
+
+    private void computePalindrome(String s) {
+        isPalindrome = new boolean[s.length()][s.length()];
+        for (int i = s.length() - 1; i >= 0; i--) {
+            for (int j = i; j < s.length(); j++) {
+                if (j == i) {
+                    isPalindrome[i][j] = true;
+                } else if (j - i == 1) {
+                    isPalindrome[i][j] = s.charAt(i) == s.charAt(j);
+                } else {
+                    isPalindrome[i][j] = s.charAt(i) == s.charAt(j) && isPalindrome[i + 1][j - 1];
+                }
+            }
+        }
+    }
+}
