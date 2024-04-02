@@ -1,0 +1,24 @@
+link: https://leetcode.cn/problems/subsets/description/
+这个是全新的问题，不是找树的叶子结点了，而是要记录全部节点。（树枝上每一个节点都要记录），所以每次进递归，都要add到result里。（叶子结点是，只有终止条件下，才可能会add到result）
+其余类似。
+
+class Solution {
+    List<List<Integer>> result = new ArrayList<>();// 存放符合条件结果的集合
+    LinkedList<Integer> path = new LinkedList<>();// 用来存放符合条件结果
+    public List<List<Integer>> subsets(int[] nums) {
+        subsetsHelper(nums, 0);
+        return result;
+    }
+
+    private void subsetsHelper(int[] nums, int startIndex){
+        result.add(new ArrayList<>(path));//「遍历这个树的时候，把所有节点都记录下来，就是要求的子集集合」。
+        if (startIndex >= nums.length){ //终止条件可不加
+            return;
+        }
+        for (int i = startIndex; i < nums.length; i++){
+            path.add(nums[i]);
+            subsetsHelper(nums, i + 1);
+            path.removeLast();
+        }
+    }
+}
