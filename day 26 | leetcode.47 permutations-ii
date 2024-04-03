@@ -1,0 +1,45 @@
+link:https://leetcode.cn/problems/permutations-ii/description/
+这个题是有重复元素的数组，所以要先排序再去重。
+去重标准是仍然是nums[i]==nums[i-1]，同时要保证nums[i-1]在同一层被使用过了（比如第二层循环是找第二个元素可能是啥，如123345，遍历到第二个3的时候就要跳过这个3，不进他的递归。因为在他之前有3了，且被处理完了）
+也就是说，第二层循环从1，2，3，再到第二个3时，第二个3的前一个元素也是3，且为false，也就是说，当前循环（当前层2）已经处理过当前层（位置）是这个元素的情况了，所以跳过，类似dfs搜索叶子节点。
+
+遍历到第一个3时，第一个3变成true，进他的递归找以第二个元素是3条件下，所有可能的第三个，第四个和更后面的元素。全找完了，再返回第二层循环，表示，第二个元素是3的所有情况都处理完了。
+然后第二层继续遍历，遇到第二个3，相当于遇到了result同一个位置（同一层）的重复元素（又来一个第二个位置是3的情况，刚才已经处理过了），就不用管了。
+
+class Solution {
+    //存放结果
+    List<List<Integer>> result = new ArrayList<>();
+    //暂存结果
+    List<Integer> path = new ArrayList<>();
+
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        boolean[] used = new boolean[nums.length];
+        Arrays.fill(used, false);
+        Arrays.sort(nums);
+        backTrack(nums, used);
+        return result;
+    }
+
+    private void backTrack(int[] nums, boolean[] used) {
+        if (path.size() == nums.length) {
+            result.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            // used[i - 1] == true，说明同⼀树⽀nums[i - 1]使⽤过
+            // used[i - 1] == false，说明同⼀树层nums[i - 1]使⽤过
+            // 如果同⼀树层nums[i - 1]使⽤过则直接跳过
+            if (i > 0 && nums[i] == nums[i - 1] && used[i - 1] == false) {
+                continue;
+            }
+            //如果同⼀树⽀nums[i]没使⽤过开始处理，这里false保证了不选上面层递归正在选中（设置为true，进递归）的元素（也就是同一树枝上的元素）
+            if (used[i] == false) {
+                used[i] = true;//标记同⼀树⽀nums[i]使⽤过，防止同一树枝重复使用
+                path.add(nums[i]);
+                backTrack(nums, used);
+                path.remove(path.size() - 1);//回溯
+                used[i] = false;//回溯，说明同⼀树层nums[i]使⽤过了，作为flag防止（同一层的下一个节点）重复，当前层（位置）就不能选这个节点了。（其实整个题目就是把nums数组长度个数的各个位置填满的过程。5元素，path就填5个位置）
+            }
+        }
+    }
+}
