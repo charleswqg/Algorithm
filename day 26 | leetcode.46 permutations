@@ -1,0 +1,27 @@
+link: https://leetcode.cn/problems/permutations/
+这道题我自己A了！！
+有几个地方要注意，首先是排列问题有顺序和组合问题的无序不同，所以不需要startindex，比如435674，第一个元素选了3，第二个元素不用从3后面开始，也可以是3前面的4，因为43和34不同。
+第二个就是，一个排列里，一个元素只能用一次。
+虽然不用startindex（之前用i+1进递归避免选自己这种情况），但得保证每层之间不能选自己，也就是第一个元素选3，进递归第二个元素得把3排除，可以用used数组记录或者path是否contains。（这个是树枝内不允许重复）
+class Solution {
+    List<List<Integer>> result=new ArrayList<>();
+    List<Integer> temp=new ArrayList<>();
+    public List<List<Integer>> permute(int[] nums) {
+        backTracking(nums);
+        return result;
+    }
+
+    public void backTracking(int [] nums){
+        if(temp.size()==nums.length){
+            result.add(new ArrayList(temp));
+            return;
+        }
+        for(int i=0;i<nums.length;i++){
+            if(!temp.contains(nums[i])){
+                temp.add(nums[i]);
+                backTracking(nums);
+                temp.remove(temp.size()-1);
+            }
+        }
+    }
+}
