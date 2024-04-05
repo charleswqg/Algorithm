@@ -2,6 +2,9 @@ link: https://leetcode.cn/problems/wiggle-subsequence/description/
 这道题有点复杂，没想出来。
 关键是比较当前节点和前面的差，与当前节点和后面的差是否符号不同（也要注意平坡=0）
 更重要的是单调平坡要处理好，只有确定是峰或谷，才改变pre。
+然后处理只有两个元素的情况，默认数组最右侧的元素是一个峰值（count从1开始，两个元素的话，最后一个默认算了，第一个元素如果成立，就再算他一个）
+终止条件在i时由于要算i+1，设定为i小于length-1，所以直接结束。
+
 仔细看分析
 https://programmercarl.com/0376.%E6%91%86%E5%8A%A8%E5%BA%8F%E5%88%97.html#%E6%80%9D%E8%B7%AF
 
@@ -19,7 +22,8 @@ class Solution {
             //得到当前差值
             curDiff = nums[i+1] - nums[i];
             //如果当前差值和上一个差值为一正一负
-            //等于0的情况表示初始时的preDiff
+            //等于0的情况表示初始时的preDiff，或者平坡（去掉平台上所有左侧的元素，保留平台最右侧拐点的那个元素）
+            //注意只有满足拐点，才更新pre，防止递增，平台，再接递增（平台右侧的元素也不能算拐点！！因为他之前在递增，之后也在递增！属于特殊bug）
             if ((curDiff > 0 && preDiff <= 0) || (curDiff < 0 && preDiff >= 0)) {
                 count++;
                 preDiff = curDiff;
