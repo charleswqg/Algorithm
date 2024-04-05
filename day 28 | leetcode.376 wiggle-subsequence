@@ -1,0 +1,30 @@
+link: https://leetcode.cn/problems/wiggle-subsequence/description/
+这道题有点复杂，没想出来。
+关键是比较当前节点和前面的差，与当前节点和后面的差是否符号不同（也要注意平坡=0）
+更重要的是单调平坡要处理好，只有确定是峰或谷，才改变pre。
+仔细看分析
+https://programmercarl.com/0376.%E6%91%86%E5%8A%A8%E5%BA%8F%E5%88%97.html#%E6%80%9D%E8%B7%AF
+
+class Solution {
+    public int wiggleMaxLength(int[] nums) {
+        if (nums.length <= 1) {
+            return nums.length;
+        }
+        //当前差值
+        int curDiff = 0;
+        //上一个差值
+        int preDiff = 0;
+        int count = 1;
+        for (int i = 0; i < nums.length-1; i++) {
+            //得到当前差值
+            curDiff = nums[i+1] - nums[i];
+            //如果当前差值和上一个差值为一正一负
+            //等于0的情况表示初始时的preDiff
+            if ((curDiff > 0 && preDiff <= 0) || (curDiff < 0 && preDiff >= 0)) {
+                count++;
+                preDiff = curDiff;
+            }
+        }
+        return count;
+    }
+}
