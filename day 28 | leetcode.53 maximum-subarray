@@ -21,6 +21,11 @@ class Solution {
 }
 
 // DP 
+注意最后的结果可不一定是dp[nums.length-1 =6]，而是dp[5]。
+在回顾一下dp[i]的定义：包括下标i这个元素，之前的最大连续子序列和为dp[i]，但最终结果不一定需要包括这个元素（以这个元素结尾）
+比如123456-9，子序列不包含最后一个元素-9。
+那么我们要找最大的连续子序列，就应该找以每一个i为终点的连续最大子序列dp[i]，看哪个最大。
+
 class Solution {
     public int maxSubArray(int[] nums) {
         int ans = Integer.MIN_VALUE;
@@ -29,7 +34,7 @@ class Solution {
         ans = dp[0];
 
         for (int i = 1; i < nums.length; i++){
-            dp[i] = Math.max(dp[i-1] + nums[i], nums[i]);  //前面是负数，就选自己当临时结果（相当于从新开始），正数就累加。
+            dp[i] = Math.max(dp[i-1] + nums[i], nums[i]);  //前面是负数，就选自己当临时结果（相当于从新开始，不仅是终点，自己也成了新起点），正数就累加（自己是终点）。
             ans = Math.max(dp[i], ans);                    //每次算完到当前节点的最大子数组和后，更新结果。结果序列不一定需要包含当前元素，也就是说，最后一个元素dp[length-1]不一定是最终结果。
         }
 
