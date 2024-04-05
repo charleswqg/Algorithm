@@ -1,0 +1,38 @@
+link: https://leetcode.cn/problems/maximum-subarray/description/
+关键点是，如果到某个元素，和变成负数了，说明这前面的就不要了，从他的下一个元素开始从0计数。
+可以贪心可以dp。
+
+//贪心
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int result=Integer.MIN_VALUE; //不为0是为了防止只有负数情况
+        int temp=0;
+        for(int i=0;i<nums.length;i++){
+            temp+=nums[i];
+            if(temp>result){         //如果临时和大于结果，更新结果
+                result=temp;
+            }
+            if(temp<0){             //如果临时和小于0了，说明后面如果有正数，会被前面这段临时和拉低结果，所以前面这些就不要了。
+                temp=0;
+            }
+        }
+        return result;
+    }
+}
+
+// DP 
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int ans = Integer.MIN_VALUE;
+        int[] dp = new int[nums.length];    //数组存放的是从头到包含当前元素，这一部分的最大子数组和
+        dp[0] = nums[0];
+        ans = dp[0];
+
+        for (int i = 1; i < nums.length; i++){
+            dp[i] = Math.max(dp[i-1] + nums[i], nums[i]);  //前面是负数，就选自己当临时结果（相当于从新开始），正数就累加。
+            ans = Math.max(dp[i], ans);                    //每次算完到当前节点的最大子数组和后，更新结果。结果序列不一定需要包含当前元素，也就是说，最后一个元素dp[length-1]不一定是最终结果。
+        }
+
+        return ans;
+    }
+}
