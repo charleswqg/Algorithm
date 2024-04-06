@@ -1,0 +1,13 @@
+link: https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/
+可以把利润拆解为第i天的price减前一天的price，这样只取正的result就行。
+
+// 贪心思路
+class Solution {
+    public int maxProfit(int[] prices) {
+        int result = 0;
+        for (int i = 1; i < prices.length; i++) {
+            result += Math.max(prices[i] - prices[i - 1], 0);
+        }
+        return result;
+    }
+}
