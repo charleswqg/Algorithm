@@ -1,0 +1,41 @@
+https://leetcode.cn/problems/jump-game-ii/description/
+
+这道题没想出来。
+关键是两步，先记录当前能覆盖的距离（就是这一步就能到的距离），然后i从头开始遍历，记录能覆盖的最大距离（就是从i开始跳，也许能覆盖更大范围，相当于在当前跳到i的基础上，再跳一步能覆盖的范围）。
+如果maxDistance包含末尾，说明从这个i再跳一步，就能到数组尾部，所以直接跳跃次数+1就结束。
+如果不包含，说明跳到i，再从i跳一步也不能到尾，i继续往后试探。
+如果i到了当前能跳的最大距离，这之前已经判断过从这个i再跳一步，也跳不到结尾，说明真的需要在开始的基础上跳一步了，更新当前能覆盖的范围为maxDistance。
+也就是说，curDistance是当前这一步能覆盖的范围，maxDistance是在跳完当前这一步后，在当前这步所能到达的位置，这个位置上再跳一步，所能覆盖的范围（跳两次）。
+
+2，5，1，2，1，1，6，1
+i从0开始，cur初始是0，max是2，到不了末尾，但同时i和cur相等了，说明此时不跳一步就找不到了。就得跳一步，更新cur为刚才的max=2，此时表示不继续跳，i最多可以到2（cur）。
+i=1，max变成5+1=6,还没到7，但这时i也没到cur的2，说明还能在这一步内继续试探。然后i到2，发现Max都不用更新了，太短了，同时i=cur，说明这一步无法到结尾，必须要跳一步了，更新cur=max=6，count变成2，说明跳了两步。
+（但还没到结尾，正在第二步能到的范围cur内试探，可能的第三步能否到结尾）i再逐渐往后找，到i=6时，max=6+6=12，>=7，表示第二步跳到i=6，再从i=6跳一步就能到结尾，所以直接再加一步，break结束！！
+class Solution {
+    public int jump(int[] nums) {
+        if (nums == null || nums.length == 0 || nums.length == 1) {
+            return 0;
+        }
+        //记录跳跃的次数
+        int count=0;
+        //当前这一步所能到达的点（下标）
+        int curDistance = 0;
+        //在这一步范围内的点的基础上，如果再跳一步，可能到达的最大的覆盖区域
+        int maxDistance = 0;
+        for (int i = 0; i < nums.length; i++) {
+            //在可覆盖区域内更新最大的覆盖区域，看当前这个i能否扩大潜在的覆盖区域。（从这个i再跳一步能到哪）
+            maxDistance = Math.max(maxDistance,i+nums[i]);
+            //说明在当前这步，i的位置，再跳一步就到达了末尾
+            if (maxDistance>=nums.length-1){
+                count++;
+                break;
+            }
+            //走到当前覆盖的最大区域时（无法从任何当前这步能到达的i的位置（i<=cur），跳一步到终点），更新下一步可达的最大区域
+            if (i==curDistance){
+                curDistance = maxDistance;
+                count++;
+            }
+        }
+        return count;
+    }
+}
