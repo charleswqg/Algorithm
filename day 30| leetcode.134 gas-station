@@ -1,0 +1,21 @@
+link: https://leetcode.cn/problems/gas-station/description/
+没想到，关键是，如果从头开始加到某个节点的剩余油量小于0，说明从头开始到这个节点，都不可能作为转圈的起点，直接更新出发点index去这个i后一个，继续看行不行。
+
+// 解法2
+class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int curSum = 0;
+        int totalSum = 0;
+        int index = 0;
+        for (int i = 0; i < gas.length; i++) {
+            curSum += gas[i] - cost[i];
+            totalSum += gas[i] - cost[i];
+            if (curSum < 0) {
+                index = (i + 1) % gas.length ; 
+                curSum = 0;
+            }
+        }
+        if (totalSum < 0) return -1;
+        return index;
+    }
+}
