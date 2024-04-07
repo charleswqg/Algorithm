@@ -1,0 +1,37 @@
+link: https://leetcode.cn/problems/candy/
+思路很巧妙，把问题拆分成左右两个子问题，分别解决。
+左小右大的情况，从头往后遍历。
+右小左大的情况，从后往前遍历（因为需要相对较小的i的糖果个数，才能得出稍大的给几个糖果）
+
+class Solution {
+    /**
+         分两个阶段
+         1、起点下标1 从左往右，只要 右边 比 左边 大，右边的糖果=左边 + 1
+         2、起点下标 ratings.length - 2 从右往左， 只要左边 比 右边 大，此时 左边的糖果应该 取本身的糖果数（符合比它左边大） 和 右边糖果数 + 1 二者的最大值，这样才符合 它比它左边的大，也比它右边大
+    */
+    public int candy(int[] ratings) {
+        int len = ratings.length;
+        int[] candyVec = new int[len];
+        candyVec[0] = 1;
+
+        //处理右比左大，从前往后遍历。
+        for (int i = 1; i < len; i++) {
+            candyVec[i] = (ratings[i] > ratings[i - 1]) ? candyVec[i - 1] + 1 : 1;
+        }
+
+        //处理左比右大，要从后往前遍历。给i的糖是小的+1，或上种情况，两者的最大值。
+        //要同时满足右比左大和左比右大。
+        for (int i = len - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i + 1]) {
+                candyVec[i] = Math.max(candyVec[i], candyVec[i + 1] + 1);
+            }
+        }
+
+        //计算总共需要的糖果数量
+        int ans = 0;
+        for (int num : candyVec) {
+            ans += num;
+        }
+        return ans;
+    }
+}
