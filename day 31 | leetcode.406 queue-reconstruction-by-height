@@ -1,0 +1,22 @@
+link: https://leetcode.cn/problems/queue-reconstruction-by-height/
+这道题类似分糖果，两个维度（身高，和这个人前面有几个比他高的）。
+需要处理两次，先把身高降序排列，然后依次按身高降序排列后，子数组（人）的index（p[1]）放入队列指定位置。
+因为身高降序排列后，按身高从高到低放入队列，此时前面有几个比他高的，就是队列中的情况，队列中靠前的人，一定比当前这个人高，所以就可以直接用p[1]寻找队列中的下标。
+如果没降序，在循环遍历插入当前元素时，还要找队列靠前元素的（p[0]）身高值是否比当前元素大，大了才能算一个比他高的，无法处理！
+
+class Solution {
+    public int[][] reconstructQueue(int[][] people) {
+        // 身高从大到小排（身高相同k小的站前面）
+        Arrays.sort(people, (a, b) -> {
+            if (a[0] == b[0]) return a[1] - b[1];   // a - b 是升序排列，故在a[0] == b[0]的狀況下，會根據k值升序排列
+            return b[0] - a[0];   //b - a 是降序排列，在a[0] != b[0]，的狀況會根據h值降序排列
+        });
+
+        LinkedList<int[]> que = new LinkedList<>();
+
+        for (int[] p : people) {
+            que.add(p[1],p);   //Linkedlist.add(index, value)，會將value插入到指定index裡。
+        }
+        return que.toArray(new int[people.length][]);
+    }
+}
