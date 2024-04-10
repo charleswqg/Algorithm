@@ -1,0 +1,24 @@
+link: https://leetcode.cn/problems/merge-intervals/
+
+区间问题记得先排序，我习惯按左区间排序。
+然后把第一个区间加到result中，从i=1开始遍历每个排序后的区间，如果当前区间的左，小于result最后一个区间的右边界，说明有重合，这样就更新result最后一个区间的右边界为二者的最大右边界！！
+（这里要尽可能扩大每个重合区间。但是之前射气球之类的是要最小右边界，因为他要保证后续的每个区间，都能和之前所有区间重合，12重合，3要和12都重合，才能一箭射掉3个！）
+
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        List<int[]> result = new LinkedList<>();
+        // 按照左边界排序
+        Arrays.sort(intervals, (x, y) -> Integer.compare(x[0], y[0]));
+        result.add(intervals[0]);
+        for (int i = 1; i < intervals.length; i++) {
+            int[] last = result.get(result.size() - 1);
+            // 如果当前区间的左边界小于等于上一个区间的右边界，说明需要合并。如果不重合，说明是完全的新区间，直接加入结果。
+            if (intervals[i][0] <= last[1]) {
+                last[1] = Math.max(last[1], intervals[i][1]);
+            } else {
+                result.add(intervals[i]);
+            }
+        }
+        return result.toArray(new int[result.size()][]);
+    }
+}
