@@ -1,0 +1,20 @@
+link: https://leetcode.cn/problems/non-overlapping-intervals/
+这道题思路和射气球类似，左边排序，重合就更新当前右边界为公共最小的，remove多一个（当前这个）。不重合就直接更新右边界为当前节点的右边界。
+
+class Solution {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        Arrays.sort(intervals, (a,b)-> {
+            return Integer.compare(a[0],b[0]);
+        });
+        int remove = 0;
+        int pre = intervals[0][1];
+        for(int i = 1; i < intervals.length; i++) {
+            if(pre > intervals[i][0]) {
+                remove++;
+                pre = Math.min(pre, intervals[i][1]);
+            }
+            else pre = intervals[i][1];
+        }
+        return remove;
+    }
+}
