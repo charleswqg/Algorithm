@@ -1,0 +1,30 @@
+link: https://leetcode.cn/problems/partition-labels/description/
+
+这道题有坑，首先是遍历一次，用26位int数组记录每个字母最后一次出现的位置。
+然后坑来了，再次从头遍历，如果遇到一个字符，去查找他的最后出现位置，但要注意，不是到达最后出现位置就切割，因为这样只能保证这个字符不在其余子串中出现，但这个子串之前遍历过的其余字符还可能出现！！！！
+abcdabc，遍历到第二个a的时候，不能切，因为如果在这里切，后面又出现了重复的b。但第一个子串是abcda，按要求需要把重复的b也放在这个串中，就错了！！！！
+所以，要用一个flag记录当前遍历过所有元素的最远下标，每遍历到一个新元素，就要把这个最远下标更新为最大值。这样才能保证，你遍历过的每一种字母，都会被包含在这个子串里。（遍历过b了，那就要保证所有b都在这个串里）
+
+class Solution {
+    public List<Integer> partitionLabels(String S) {
+        List<Integer> list = new LinkedList<>();
+        int[] edge = new int[26];
+        char[] chars = S.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            edge[chars[i] - 'a'] = i;
+        }
+      
+        int idx = 0; //当前子串的结尾位置，需要随着遍历不断更新。
+        int last = -1; //确定切割后，记录切割位置。
+      
+        for (int i = 0; i < chars.length; i++) {
+            //这里要获取当前这个字符的最后出现位置，和之前字符的最后出现位置相比，取更大的，表示当前所有遍历过的字符，他的重复出现的字符，都被包括在当前子串中。
+            idx = Math.max(idx,edge[chars[i] - 'a']);
+            if (i == idx) {
+                list.add(i - last);
+                last = i;
+            }
+        }
+        return list;
+    }
+}
