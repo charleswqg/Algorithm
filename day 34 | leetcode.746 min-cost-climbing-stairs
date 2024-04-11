@@ -1,0 +1,18 @@
+https://leetcode.cn/problems/min-cost-climbing-stairs/description/
+这道题自己做出来了！！
+dp数组的含义是，走到这一层，一共花了多少钱。
+递推公式：下面第2层走两步上来或者下面一层走一步上来，从头到这两层的总开销dp[i-2]，dp[i-1]、再分别加上两者本身的cost，这样取较小的那个，作为从头到达当前层的总开销。
+初始化第一步可以从0或1层开始，所以到0或1层的总开销都是0。遍历顺序还是从前往后，因为需要之前的开销计算到当前的总开销。
+最后举例写码验证。
+
+class Solution {
+    public int minCostClimbingStairs(int[] cost) {
+        int [] dp=new int [cost.length+1];
+        dp[0]=0;
+        dp[1]=0;
+        for(int i=2;i<dp.length;i++){
+            dp[i]=Math.min(dp[i-1]+cost[i-1],dp[i-2]+cost[i-2]);
+        }
+        return dp[dp.length-1];
+    }
+}
