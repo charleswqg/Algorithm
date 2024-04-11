@@ -1,0 +1,40 @@
+link: https://leetcode.cn/problems/climbing-stairs/description/
+
+没想出来，得按五步曲想！！
+dp数组表示，到当前这一层i，有多少种走法。
+和斐波那契相似，可以从i-2那一层走两步，或者从i-1走一步。也就是说，dp[i]就是到他下面第二层（i-2）的路线数量，加上到他下面一层（i-1）的路线数量，这两部分路线数量相加。
+所以 dp[i]=dp[i-1]+dp[i-2]。初始值不考虑0这个情况（没有第0层），第一层为1（上一个台阶），第二层为2（直接两个台阶，或者一个又一个）。
+遍历顺序从前往后，因为到第i层的路线是根据i-1和i-2这两层的路线想家求得的。
+然后举例 12358xx，写代码验证。
+想要优化空间的话，就数组长度为3，不断更新最近两个路线数量放进去就行。
+class Solution {
+    public int climbStairs(int n) {
+        int [] dp=new int[n+1];
+        if(n<=2){
+            return n;
+        }
+        dp[1] = 1;
+        dp[2] = 2;
+        for(int i=3;i<=n;i++){
+            dp[i]=dp[i-1]+dp[i-2];
+        }
+        return dp[n];
+    }
+}
+
+// 版本二
+class Solution {
+public:
+    int climbStairs(int n) {
+        if (n <= 1) return n;
+        int dp[3];
+        dp[1] = 1;
+        dp[2] = 2;
+        for (int i = 3; i <= n; i++) {
+            int sum = dp[1] + dp[2];
+            dp[1] = dp[2];
+            dp[2] = sum;
+        }
+        return dp[2];
+    }
+};
