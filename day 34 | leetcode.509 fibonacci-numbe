@@ -1,0 +1,31 @@
+link: https://leetcode.cn/problems/fibonacci-number/
+今天进入dp，第一道题自己写出了。
+dp五步曲：
+1.确定dp数组和下标的的含义。
+2.确定状态转移公式
+3.数组如何初始化
+4.确定遍历顺序
+5.距离推导dp数组，看代码实现。
+
+这道题dp数组的含义： arr[i]表示n=1时的f(n)值。
+初始化题目给了，公式也给了，遍历顺序因为当前值根据前两个得出，从前往后！然后举例验证就行。
+
+class Solution {
+    public int fib(int n) {
+        if(n==0){
+            return 0;
+        }
+        else if(n==1){
+            return 1;
+        }
+        else{
+            int [] arr=new int[n+1];
+            arr[0]=0;
+            arr[1]=1;
+            for(int i=2;i<=n;i++){
+               arr[i]=arr[i-1]+arr[i-2];
+            }
+            return arr[n];
+        }
+    } 
+}
