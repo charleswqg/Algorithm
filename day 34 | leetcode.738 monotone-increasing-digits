@@ -1,0 +1,23 @@
+link: https://leetcode.cn/problems/monotone-increasing-digits/
+
+这道题巧妙的地方在于，从后往前遍历。因为要求结果是小于输入数字的最大值，且各位上递增。
+所以如果当前位大于靠后的一位，把当前位数字-1，把他的后一位变成9。这样靠后的一定是更大的数字，保证结果各位数字递增的同时让后面的数字最大（前面的位数才有机会多增加几个，需要大于0才行，这样位数多，值就大）。
+代码技巧是用start记录哪一位往后都是9，最后再赋值。考虑后面数字都相同，最后每一位都得变成9，提前赋值就只有最靠前那个相同元素是9，后面全是0，错了！！
+
+class Solution {
+    public int monotoneIncreasingDigits(int n) {
+        String s = String.valueOf(n);
+        char[] chars = s.toCharArray();
+        int start = s.length();//最后再给9的位赋值，记录从哪一位开始往后都是9。考虑特例100，答案99，提前复赋值就是90。
+        for (int i = s.length() - 2; i >= 0; i--) {
+            if (chars[i] > chars[i + 1]) {
+                chars[i]--;
+                start = i+1;
+            }
+        }
+        for (int i = start; i < s.length(); i++) {
+            chars[i] = '9';
+        }
+        return Integer.parseInt(String.valueOf(chars));
+    }
+}
