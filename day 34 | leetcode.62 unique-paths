@@ -1,0 +1,23 @@
+link: https://leetcode.cn/problems/unique-paths/
+
+这道题之前做过，做出来了。dp数组表示从左上角到这个位置有几条路线，递推公式因为每次只能向下或向右，所以就是上面一格的值加左面一格的值。
+初始化最左一列和最上一排都是1，因为只有一条路（只能右或下移动），其余为0.遍历顺序两层for一层层遍历，左到右，上到下，因为需要上和左的dp值才能求当前值，最后举例验证。
+
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int [][] dp=new int [m][n];
+        for(int i=0;i<m;i++){
+            dp[i][0]=1;
+        }
+        for(int j=0;j<n;j++){
+            dp[0][j]=1;
+        }
+
+        for(int i=1;i<m;i++){
+            for(int j=1;j<n;j++){
+                dp[i][j]=dp[i-1][j]+dp[i][j-1];
+            }
+        }
+        return dp[m-1][n-1];
+    }
+}
