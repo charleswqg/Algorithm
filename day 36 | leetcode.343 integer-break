@@ -1,0 +1,25 @@
+link: https://leetcode.cn/problems/integer-break/description/
+
+这道题没想出来。五步曲第一步确定dp数组意义，dp【i】表示n=i时，把i拆分后得到的最大乘积。
+公式很难想！！我们拆分i的时候，可以用一个循环从1开始拆成j和i-j，j从1开始不断增加。这样i的结果就有两大类，一个是拆成两个数字，另一种是拆成一个数字和一个dp【i-j】（dp【i-j】最少是两个数字得出来的，相当于当前i拆分后超过两个数了）
+初始化i=0和1没意义，i=2开始是拆成1+1，结果是dp【2】=1，所以i可以从3开始循环。，内层仍然是j从i到当前i，尝试拆成每个数字。
+顺序从前往后，因为求dp【i】的时候，需要dp【i-j】（j从1开始增加）的每一个结果。
+然后写代码举例。
+
+class Solution {
+    public int integerBreak(int n) {
+        //dp[i] 为正整数 i 拆分后的结果的最大乘积
+        int[] dp = new int[n+1];
+        dp[2] = 1;
+        for(int i = 3; i <= n; i++) {
+            for(int j = 1; j < i; j++) {
+                // 这里的 j 其实最大值为 i-j,再大只不过是重复而已
+                //并且，在本题中，我们分析 dp[0], dp[1]都是无意义的。
+                dp[i] = Math.max(dp[i], Math.max(j*(i-j), j*dp[i-j]));
+                // j * (i - j) 是单纯的把整数 i 拆分为两个数 也就是 i,i-j ，再相乘。
+                //而j * dp[i - j]是将 i 拆分成两个以及两个以上的个数,再相乘。因为dp[i-j]最起码是之前两个数组成的结果。
+            }
+        }
+        return dp[n];
+    }
+}
