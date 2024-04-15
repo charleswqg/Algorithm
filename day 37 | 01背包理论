@@ -1,0 +1,96 @@
+问题是，有几个物品的重量和价值，还有一个能存放重量最大是bagSize的包，想办法把物品放进包里，让包里的价值最大。
+这个很难想，动态规划，但还是五步曲。首先是用二维数组进行初始化。dp【i】【j】的意义是，把下标从0到i的物品任意放进容量为j的背包中（可能有些放，有些不放），所能得到的最大价值。
+第二步递推公式，如果当前物品i的重量大于当前背包j的重量，i就不可能在这时放进去了，所以价值就是不放i，容量为j的最大价值dp[i-i][j]。
+如果当前物品的重量i小于当前背包j的重量，说明有可能把当前物品i放进去，但不一定价值最大，因为可能有大重量小价值的物品。所以放或不放取最大值，作为最大价值。
+也就是dp[i-1][j-weight[i]] + value[i]（如果放i，需要求当前背包容量j的条件下，额外把i需要的空间给空出来；且没放i，只可能放了0到i-1这些物品中的某些时的最大价值。再加上i的价值）或dp[i-1][j]（i是大重量小价值）
+第三步初始化，第一列表示背包容量为0时的情况，所以就是0，啥也放不下。第一行表示编号为0的那个物品，能否放进从0开始逐渐增大容量的背包中。也就是说，当j增大到大于weight[0]时，一直到背包的最大容量，都赋值为第0个物品的价值。
+第四步确定遍历顺序，递推公式看出，正上和左上的元素求出当前格元素，所以可以两层循环左到右，上到下，外层遍历物品容易想。放前两个物品，容量增大能不能放进去，记录价值，再看第三个物品能否放进去，放不进去就还是按前两个来，能放进去再讨论。
+第五步写代码举例子，如下。
+
+public class BagProblem {
+    public static void main(String[] args) {
+        int[] weight = {1,3,4};
+        int[] value = {15,20,30};
+        int bagSize = 4;
+        testWeightBagProblem(weight,value,bagSize);
+    }
+
+    /**
+     * 动态规划获得结果
+     * @param weight  物品的重量
+     * @param value   物品的价值
+     * @param bagSize 背包的容量
+     */
+    public static void testWeightBagProblem(int[] weight, int[] value, int bagSize){
+
+        // 创建dp数组
+        int goods = weight.length;  // 获取物品的数量
+        int[][] dp = new int[goods][bagSize + 1];
+
+        // 初始化dp数组
+        // 创建数组后，其中默认的值就是0
+        for (int j = weight[0]; j <= bagSize; j++) {
+            dp[0][j] = value[0];
+        }
+
+        // 填充dp数组
+        for (int i = 1; i < weight.length; i++) {
+            for (int j = 1; j <= bagSize; j++) {
+                if (j < weight[i]) {
+                    /**
+                     * 当前背包的容量都没有当前物品i大的时候，是不放物品i的
+                     * 那么前i-1个物品能放下的最大价值就是当前情况的最大价值
+                     */
+                    dp[i][j] = dp[i-1][j];
+                } else {
+                    /**
+                     * 当前背包的容量可以放下物品i
+                     * 那么此时分两种情况：
+                     *    1、不放物品i
+                     *    2、放物品i
+                     * 比较这两种情况下，哪种背包中物品的最大价值最大
+                     */
+                    dp[i][j] = Math.max(dp[i-1][j] , dp[i-1][j-weight[i]] + value[i]);
+                }
+            }
+        }
+
+        // 打印dp数组
+        for (int i = 0; i < goods; i++) {
+            for (int j = 0; j <= bagSize; j++) {
+                System.out.print(dp[i][j] + "\t");
+            }
+    
+然后是一维数组的写法，因为二维数组遍历的时候，除了上一行的元素，其余再靠上的完全没用，所以直接用一维数组就行！
+舍弃了i这个维度，dp[j]表示背包容量为j时，能装的最大价值。公式不变，还是自己（不放这个i），或者放这个i，取更大的那个，作为最大价值。
+初始化都是0，因为要用大价值覆盖小价值。
+遍历顺序非常非常关键，首先背包一定是倒叙遍历，正序遍历会装重复的物品。理解上，类似二维数组解法，用左上的值更新靠右的结果，所以一维数组靠左的是上一层（遍历放入上一个物品）的结果，应该用靠左的更新靠右的。
+同时，一定是外层物品内层背包！！否则一个背包只能放一个物品了！！（确定一个j后，在这个j的容量下不断换物品放进去，出错了！！）
+
+    public static void main(String[] args) {
+        int[] weight = {1, 3, 4};
+        int[] value = {15, 20, 30};
+        int bagWight = 4;
+        testWeightBagProblem(weight, value, bagWight);
+    }
+
+    public static void testWeightBagProblem(int[] weight, int[] value, int bagWeight){
+        int wLen = weight.length;
+        //定义dp数组：dp[j]表示背包容量为j时，能获得的最大价值
+        int[] dp = new int[bagWeight + 1];
+        //遍历顺序：先遍历物品，再遍历背包容量。这里遍历到j>=当前的物品i的重量，一定能放进去，不用if了。
+        for (int i = 0; i < wLen; i++){
+            for (int j = bagWeight; j >= weight[i]; j--){
+                dp[j] = Math.max(dp[j], dp[j - weight[i]] + value[i]);
+            }
+        }
+        //打印dp数组
+        for (int j = 0; j <= bagWeight; j++){
+            System.out.print(dp[j] + " ");
+        }
+    }
+#
+            System.out.println("\n");
+        }
+    }
+}
