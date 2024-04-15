@@ -1,0 +1,77 @@
+link: https://leetcode.cn/problems/partition-equal-subset-sum/
+
+这道题是01背包问题的应用，可以转换成01背包问题。问数组的元素能否分为两组和相同的，也就是求数组中一些元素的和能否正好等于数组元素总和的一半。
+这样相当于背包的容量就是sum/2，物品就是一个个数组中的元素，不能重复使用。关键是物品的价值和重量，都应该是元素的值。
+因为01背包求的是背包容量下能装的物品的最大价值，题目中价值等于重量，也就是背包中能装的最大重量，也就是元素的和最大是多少。
+在这里，（dp【j】，背包容量为j的最大价值）价值等于重量，那么价值最大也就等于重量最大，由于重量小于等于背包容量，所以直接看最大价值（dp[sum/2],背包容量为sum/2，此时的最大价值为dp值，也是最大重量）是否能恰好等于背包容量(sum/2)就行
+又因为背包中物品的重量，一定小于等于背包的容量（dp[j]<=j）（因为解法中只处理了背包容量>=i重量的情况），所以求的最大值，也就是最靠近背包容量的元素重量（价值），如果能等于背包容量（sum/2），那就找到了结果！！！！
+同时也可以用二维数组和一维数组实现，代码如下！！
+
+class Solution {
+    public boolean canPartition(int[] nums) {
+        if(nums == null || nums.length == 0) return false;
+        int n = nums.length;
+        int sum = 0;
+        //求和
+        for(int num : nums) {
+            sum += num;
+        }
+        //总和为奇数，不能平分,直接返回false，偶数才可能一半一半相等。
+        if(sum % 2 != 0) return false;
+        
+        int target = sum / 2;
+        int[] dp = new int[target + 1];
+        //还是先物品（数组中的元素）后倒序逐渐减小背包容量
+        for(int i = 0; i < n; i++) {
+            for(int j = target; j >= nums[i]; j--) {
+                //物品 i 的重量是 nums[i]，其价值也是 nums[i]
+                dp[j] = Math.max(dp[j], dp[j - nums[i]] + nums[i]);
+            }
+        }
+        return dp[j]==target
+    }
+}
+
+
+//二维数组
+class Solution {
+    public boolean canPartition(int[] nums) {
+        //using 2-D DP array.
+        int len = nums.length;
+        //check edge cases;
+        if(len == 0)
+            return false;
+
+        int sum = 0;
+        for (int num : nums)
+            sum += num;
+        //we only deal with even numbers. If sum is odd, return false;
+        if(sum % 2 == 1)
+            return false;
+        
+        int target = sum / 2;
+        int[][] dp = new int[nums.length][target + 1];
+
+        // for(int j = 0; j <= target; j++){
+        //     if(j < nums[0])
+        //         dp[0][j] = 0;
+        //     else
+        //         dp[0][j] = nums[0];
+        // }
+
+        //initialize dp array
+        for(int j = nums[0]; j <= target; j++){
+            dp[0][j] = nums[0];
+        }
+
+        for(int i = 1; i < len; i++){
+            for(int j = 0; j <= target; j++){
+                if (j < nums[i]) 
+                    dp[i][j] = dp[i - 1][j];
+                else 
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - nums[i]] + nums[i]);
+            }
+        }
+        return dp[target] == target;
+    }
+}
