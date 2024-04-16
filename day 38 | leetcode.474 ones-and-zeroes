@@ -1,0 +1,33 @@
+link: https://leetcode.cn/problems/ones-and-zeroes/
+这道题属于变种01背包，因为背包的容量是两个维度（m和n），物品是字符串数组中的字符串，物品重量是每个字符串的0和1个数，value是数量1（要求背包能装下的最多物品数量）
+dp数组表示，背包容量为i个0和j个1时的最大子集。
+递推公式没变，还是Math.max(dp[i][j], dp[i - zeroNum][j - oneNum] + 1);，只不过放入当前元素的操作（留出空间）从单一维度的j-weight[i]变成了0和1两个都减，加value就是+1，表示计数当前这个字符串到总数。
+初始化全0，顺序还是外层物品（遍历字符串数组，每个物品是数组中的每个字符串），内层背包（ij先后无所谓）倒序遍历，最后写码举例。
+
+class Solution {
+    public int findMaxForm(String[] strs, int m, int n) {
+        //dp[i][j]表示i个0和j个1时的最大子集，背包容量m和n
+        int[][] dp = new int[m + 1][n + 1];
+        int oneNum, zeroNum;
+        //外层遍历物品
+        for (String str : strs) {
+            oneNum = 0;
+            zeroNum = 0;
+            //求出每个字符串物品的重量（两维度）
+            for (char ch : str.toCharArray()) {
+                if (ch == '0') {
+                    zeroNum++;
+                } else {
+                    oneNum++;
+                }
+            }
+            //倒序遍历背包
+            for (int i = m; i >= zeroNum; i--) {
+                for (int j = n; j >= oneNum; j--) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i - zeroNum][j - oneNum] + 1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+}
