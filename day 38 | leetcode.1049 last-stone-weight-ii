@@ -1,0 +1,23 @@
+link: https://leetcode.cn/problems/last-stone-weight-ii/
+这道题，我自己，做出来了哈哈哈！
+因为有上一道题把数组分为两部分的经验！所以！这道题问石头的重量互相抵消后，剩余的最小重量，也是这个思路。
+把石头尽量分为大小相同的两部分，所以还是，背包重量为石头总重量的一半，物品为石头，物品重量和价值都是石头的重量（价值也设定为重量，是为了寻找最接近背包重量的一堆石头！因为01背包是求背包能放下的最大价值！）
+dp数组意义是背包容量为j时，能放下石头的最大价值（重量）。一维数组初始化全0（因为没有负重量）。递推公式不变，遍历顺序外物品，里倒序背包容量。最后写码举例验证。
+
+class Solution {
+    public int lastStoneWeightII(int[] stones) {
+        int sum=0;
+        for(int i: stones){
+            sum+=i;
+        }
+        int target=sum/2;
+        int [] dp=new int[target+1];
+
+        for(int i=0;i<stones.length;i++){
+            for(int j=target;j>=stones[i];j--){
+                dp[j]=Math.max(dp[j],dp[j-stones[i]]+stones[i]);
+            }
+        }
+        return (sum-dp[target])-dp[target];
+    }
+}
