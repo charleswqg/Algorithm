@@ -1,0 +1,31 @@
+link: https://leetcode.cn/problems/target-sum/
+这道题不会做，首先把数组分为左右两堆，左是正号，右相当于负号。左-右=target，左+右=sum，这样二元一次就求出来了左的和是多少。
+那么题目就变成了，求和为target+sum/2有多少种情况。也就是背包容量为target+sum/2，有多少种装法，让背包恰好装满。（之前的题都是最大价值或最大重量是多少）
+dp数组表示，背包容量为j时，装满这个包有多少种装法（选数组中的元素作为物品，重量是元素的值）。
+递推公式换了！如果外层物品遍历到的重量是nums[i]，那么dp[j]就要加上dp[j-nums[i]]，相当于当前背包容量为5，找到一个物品的重量为3，那装满5的话，就要找背包容量为5-3=2时有多少种可能，也就是dp[2]。
+因为有很多物品，所以求可能结果数量，要+=求和。（还能找到是1的物品，这时就要去找容量为4的背包有多少个）
+初始化dp[0]=1,因为容量为0的包，有一种装法，装重量是0的物品（正负就算一种）。
+遍历顺序还是外层物品内层背包容量倒序遍历，最后写码举例。
+
+class Solution {
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) sum += nums[i];
+
+        //如果target的绝对值大于sum，那么是没有方案的，表示所有元素都是正号或负号，也够不到这个target。
+        if (Math.abs(target) > sum) return 0;
+        //如果(target+sum)除以2的余数不为0，也是没有方案的。例如111111，和为3，做不到。但和为2可以做到，找左（bagsize）是4的所有情况就行。
+        if ((target + sum) % 2 == 1) return 0;
+
+        int bagSize = (target + sum) / 2;
+        int[] dp = new int[bagSize + 1];
+        dp[0] = 1;
+
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = bagSize; j >= nums[i]; j--) {
+                dp[j] += dp[j - nums[i]];
+            }
+        }
+        return dp[bagSize];
+    }
+}
