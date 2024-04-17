@@ -1,0 +1,20 @@
+lnk: https://leetcode.cn/problems/combination-sum-iv/description/
+
+这道题属于排列问题，因为答案允许112和121，排列问题外层背包内层物品！！
+dp[j]表示，当前背包（物品的重量和）容量为j时，有多少种凑法。物品重量为元素值，value在组合排列问题（求多少种可能的结果）中不用考虑，不会用到。
+初始化dp[0]=1，意思是凑和为0只有一种啥也不干的方法。遍历顺序刚说了，完全背包不用背包倒序，排列问题先背包后物品（组合问题先物品后背包）
+递推公式不变 dp[i] += dp[i - nums[j]]，然后举例写码。
+class Solution {
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        for (int i = 0; i <= target; i++) {
+            for (int j = 0; j < nums.length; j++) {
+                if (i >= nums[j]) {
+                    dp[i] += dp[i - nums[j]];
+                }
+            }
+        }
+        return dp[target];
+    }
+}
