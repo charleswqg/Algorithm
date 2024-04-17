@@ -1,0 +1,45 @@
+link: https://leetcode.cn/problems/coin-change-ii/
+
+这道题误打误撞做出来了。属于物品每个都有无限个，完全背包类型求组合的个数。
+注意求组合外层是物品，求排列外层是背包。
+递推公式是dp[j]+=dp[j-coins[i]]; 当前背包容量为j时的组合个数；可以用背包容量j，减去当前遍历到的物品的重量coin[i]得到的组合数量求得。（当前组合数是用之前求得的组合数求出来的）
+
+
+class Solution {
+    public int change(int amount, int[] coins) {
+        int [] dp=new int [amount+1];
+        dp[0]=1;
+        for(int i=0;i<coins.length;i++){
+            for(int j=coins[i];j<dp.length;j++){
+                dp[j]+=dp[j-coins[i]];
+            }
+        }
+        return dp[amount];
+    }
+}
+
+// 二维dp数组版本，方便理解
+class Solution {
+    public int change(int amount, int[] coins) {
+        int[][] dp = new int[coins.length][amount+1];
+
+        // 初始化边界值
+        for(int i = 0; i < coins.length; i++){
+            // 第一列的初始值为1
+            dp[i][0] = 1;
+        }
+        for(int j = coins[0]; j <= amount; j++){
+            // 初始化第一行
+            dp[0][j] += dp[0][j-coins[0]];
+        }
+        
+        for(int i = 1; i < coins.length; i++){
+            for(int j = 1; j <= amount; j++){
+                if(j < coins[i]) dp[i][j] = dp[i-1][j];
+                else dp[i][j] = dp[i][j-coins[i]] + dp[i-1][j];
+            }
+        }
+
+        return dp[coins.length-1][amount];
+    }
+}
