@@ -1,0 +1,31 @@
+link: https://leetcode.cn/problems/coin-change/
+
+这道题递推公式差一点， dp[j] = Math.min(dp[j], dp[j - coins[i]] + 1); value应该是计数1。
+其余就是完全背包，dp表示当前金额需要的最少硬币是多少个。
+初始化dp[0]=0，其余为Integer.MAX_VALUE，这样才会被小的值更新。
+遍历顺序因为不涉及排列组合，只是求个数，所以干脆物品外（当做常规做法），背包也不用倒序遍历（01才倒序）。
+
+
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int max = Integer.MAX_VALUE;
+        int[] dp = new int[amount + 1];
+        //初始化dp数组为最大值
+        for (int j = 0; j < dp.length; j++) {
+            dp[j] = max;
+        }
+        //当金额为0时需要的硬币数目为0
+        dp[0] = 0;
+        for (int i = 0; i < coins.length; i++) {
+            //正序遍历：完全背包每个硬币可以选择多次
+            for (int j = coins[i]; j <= amount; j++) {
+                //只有dp[j-coins[i]]不是初始最大值时，该位才有选择的必要
+                if (dp[j - coins[i]] != max) {
+                    //选择硬币数目最小的情况
+                    dp[j] = Math.min(dp[j], dp[j - coins[i]] + 1);
+                }
+            }
+        }
+        return dp[amount] == max ? -1 : dp[amount];
+    }
+}
