@@ -1,0 +1,31 @@
+link: https://leetcode.cn/problems/search-insert-position/submissions/558835157/
+
+这个是二分查找的变种，要利用最后找到找不到（退出循环）时进行的操作：high/low=mid+-1（根据high，mid，low当时的值）来表示插入或寻找位置。
+要么找到了，要么在最左边，要么最右边，要么在中间四种情况。很巧妙的是，都可以用最后的high+1表示结果。
+
+如果要插入在第一个位置，当时high=mid=low=0，进入循环发现target小于mid的元素（第一个元素），high=0-1=-1，而插入位置正好应该是第一个位置下标0.
+如果在最后，当时high=mid=low=length-1，进入循环发现target大于mid，low=mid+1，而high还是length-1，所以直接返回length-1再+1=high+1=length（插入位置下标）
+如果找到了，就return mid。
+eg：024插入1或3
+如果在中间，肯定还是low=mid=high，进入循环若target大于mid（0，也是low和high），插入位置要在当前mid（也就是low，high）右边，进行操作low=mid+1，high此时不变，所以直接用high+1.
+若target3小于mid（也是low和high，4），在左边，high=mid-1=2-1=1，此时应该插入当前位置2（也是high+1）
+class Solution {
+    public int searchInsert(int[] nums, int target) {
+            int low=0;
+            int high=nums.length-1;
+            while(low<=high){
+                int mid=(low+high)/2;
+                if(nums[mid]>target){
+                    high=mid-1;
+                }
+                else if(nums[mid]<target){
+                    low=mid+1;
+                }
+                else{
+                    return mid;
+                }
+            }
+//最左，high最后=-1.最右，high最后=length-1.插中间，high最后=大mid-1或mid》high+1时位置正确。
+       return high+1;
+    }
+}
