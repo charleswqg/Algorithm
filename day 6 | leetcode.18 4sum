@@ -8,7 +8,7 @@ class Solution {
         List<List<Integer>> result=new ArrayList<>();
         Arrays.sort(nums);
         for(int i=0;i<nums.length;i++){
-        if(nums[i]>0&&nums[i]>target ){   //在这里减，每次循环前，都看是否直接退出。
+        if(nums[i]>0&&nums[i]>target){   //在这里减，每次循环前，都看是否直接退出。
             return result;
         }
         
