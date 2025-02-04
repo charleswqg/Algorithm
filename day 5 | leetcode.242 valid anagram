@@ -21,12 +21,6 @@ HashSet<Integer> set=new HashSet<>();
 
 7. `iterator()`: 返回HashSet的迭代器，可以用于遍历集合中的元素。
 
-8. ‘getOrDefault(i,0)' 如果map中存在键i，返回对应value；如果不存在，返回value 0；通常插入的时候使用（类似if）伴随最后+1。map.put(i,map.getOrDefault(i,0)+1)。把i放进map，有i当前值+1，没i就是0+1。表示出现次数。
-
-HashSet没有提供按索引访问元素的方法，因为HashSet中的元素是无序的，没有固定的索引顺序。HashSet的实现是基于哈希表的，它的元素存储在哈希桶中，因此可以实现常数时间的添加、删除和查找操作。
-
-通过这些方法，可以方便地对HashSet进行元素的添加、删除、查找等操作，是处理不重复元素集合的常用工具。
-
 
 HashMap是Java中常用的键值对映射数据结构，它实现了Map接口，提供了一系列方法来操作键值对。以下是HashMap常见的方法：
 HashMap<Character, Integer> map=new HashMap<>();
@@ -54,6 +48,13 @@ HashMap<Character, Integer> map=new HashMap<>();
 11. `entrySet()`: 返回HashMap中所有键值对的集合，每个元素都是一个Map.Entry对象，包含一个键和对应的值。
 
 这些方法可以用来对HashMap进行常见的增删改查操作，并且提供了丰富的功能来处理键值对数据。通过灵活地使用这些方法，可以高效地操作HashMap，满足各种应用场景的需求。
+
+12. ‘getOrDefault(i,0)' 如果map中存在键i，返回对应value；如果不存在，返回value 0；通常插入的时候使用（类似if）伴随最后+1。map.put(i,map.getOrDefault(i,0)+1)。把i放进map，有i当前值+1，没i就是0+1。表示出现次数。
+
+HashSet没有提供按索引访问元素的方法，因为HashSet中的元素是无序的，没有固定的索引顺序。HashSet的实现是基于哈希表的，它的元素存储在哈希桶中，因此可以实现常数时间的添加、删除和查找操作。
+
+通过这些方法，可以方便地对HashSet进行元素的添加、删除、查找等操作，是处理不重复元素集合的常用工具。
+
 
 
 先来个暴力算法，两层for一个一个找，外层元素进内层找，找到了visited，最后全visited就1否则0.
